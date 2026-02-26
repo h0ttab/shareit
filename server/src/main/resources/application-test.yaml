@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+      format_sql: true
+  sql:
+    init:
+      mode: always
+  logging:
+    level.org.springframework:
+      orm.jpa: INFO
+      orm.jpa.JpaTransactionManager: DEBUG
+      transaction: INFO
+      transaction.interceptor: TRACE

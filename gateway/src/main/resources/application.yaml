@@ -1,0 +1,10 @@
+spring:
+  logging:
+    level.org.springframework:
+      orm.jpa: INFO
+      orm.jpa.JpaTransactionManager: DEBUG
+      transaction: INFO
+      transaction.interceptor: TRACE
+server:
+  port: 8080
+shareit-server: ${SHAREIT_SERVER_URL:http://localhost:9090}
