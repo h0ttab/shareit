@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.User;
 
 @Data
 @Entity

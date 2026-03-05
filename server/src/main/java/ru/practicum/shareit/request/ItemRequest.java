@@ -1,10 +1,10 @@
-package ru.practicum.shareit.request.model;
+package ru.practicum.shareit.request;
 
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.User;
 
 @Data
 @Entity
