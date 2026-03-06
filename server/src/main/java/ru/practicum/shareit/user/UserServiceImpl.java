@@ -21,13 +21,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(Long userId) {
-        User user = repository.findById(userId).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+        User user = repository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         return mapper.toUserDto(user);
     }
 
     @Override
     public UserDto update(Long userId, UserDto userDto) {
-        User user = repository.findById(userId).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+        User user = repository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         User updatedUser = repository.save(mapper.updateUserFromDto(userDto, user));
         return mapper.toUserDto(updatedUser);
     }

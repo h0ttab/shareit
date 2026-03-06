@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.exception.GlobalExceptionHandler.ErrorResponse;
 import ru.practicum.shareit.exception.ServerException;
-import ru.practicum.shareit.user.UserDto.*;
+import ru.practicum.shareit.user.UserDto.Create;
+import ru.practicum.shareit.user.UserDto.Update;
 
 @RestController
 @RequestMapping("/users")
@@ -21,8 +22,16 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUserById(@PathVariable Long userId){
-        return restClient.get().uri("/{userId}", userId).retrieve().body(UserDto.class);
+    public UserDto getUserById(@PathVariable Long userId) {
+        return restClient.get().uri("/{userId}", userId).retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ((req, res) -> {
+                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                        })
+                )
+                .body(UserDto.class);
     }
 
     @PostMapping
