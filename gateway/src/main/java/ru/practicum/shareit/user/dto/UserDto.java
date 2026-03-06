@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,9 +15,9 @@ public class UserDto {
     @Email(groups = {Create.class, Update.class}, message = "Указанное значение не соответствует формату email-адреса")
     private String email;
 
-    interface Create {
+    public interface Create {
     }
 
-    interface Update {
+    public interface Update {
     }
 }

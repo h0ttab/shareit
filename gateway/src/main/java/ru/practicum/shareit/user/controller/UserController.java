@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.exception.GlobalExceptionHandler.ErrorResponse;
 import ru.practicum.shareit.exception.ServerException;
-import ru.practicum.shareit.user.UserDto.Create;
-import ru.practicum.shareit.user.UserDto.Update;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDto.Create;
+import ru.practicum.shareit.user.dto.UserDto.Update;
 
 @RestController
 @RequestMapping("/users")
