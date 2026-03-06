@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ServerException.class)
-    public ErrorResponse handleServerException(ServerException e) {
+    public ResponseEntity<ErrorResponse> handleServerException(ServerException e) {
         log.error(e.getBody());
-        return new ErrorResponse(e.getStatus(), e.getBody());
+        return ResponseEntity.status(e.getStatus()).body(new ErrorResponse(e.getStatus(), e.getBody()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
