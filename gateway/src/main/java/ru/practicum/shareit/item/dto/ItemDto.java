@@ -1,0 +1,31 @@
+package ru.practicum.shareit.item.dto;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.*;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ItemDto {
+    private Long id;
+
+    @NotNull(groups = Create.class, message = "Название вещи обязательно для заполнения")
+    @Pattern(groups = {Create.class, Update.class}, regexp = ".*\\S.*",
+            message = "Название вещи не может быть пустым")
+    private String name;
+
+    @NotNull(groups = Create.class, message = "Описание вещи обязательно для заполнения")
+    @Pattern(groups = {Create.class, Update.class}, regexp = ".*\\S.*",
+            message = "Описание вещи не может быть пустым")
+    private String description;
+
+    @NotNull(groups = Create.class, message = "Статус доступности вещи обязателен для заполнения")
+    private Boolean available;
+
+    public interface Create {
+    }
+
+    public interface Update {
+    }
+}

@@ -14,4 +14,10 @@ public class RestClientConfig {
     RestClient userClient(@Value("#{environment.SHAREIT_SERVER_URL}") String baseUrl) {
         return RestClient.builder().baseUrl(baseUrl + "/users").build();
     }
+
+    @Bean
+    @Qualifier("ItemClient")
+    RestClient itemClient(@Value("#{environment.SHAREIT_SERVER_URL}") String baseUrl) {
+        return RestClient.builder().baseUrl(baseUrl + "/items").build();
+    }
 }
