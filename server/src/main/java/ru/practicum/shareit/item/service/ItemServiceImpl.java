@@ -43,6 +43,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Long getOwnerIdByItemId(Long itemId) {
+        return itemRepository.findOwnerIdByItemId(itemId);
+    }
+
+    @Override
     public List<ItemDto> getAllByOwnerId(Long ownerId) {
         validations.validateUserExists(ownerId);
         List<Item> itemList = itemRepository.findByOwnerId(ownerId);

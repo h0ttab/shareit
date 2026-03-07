@@ -20,4 +20,12 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             )
             """)
     List<Item> searchAvailable(@Param("query") String query);
+
+
+    @Query(value = """
+            SELECT i.owner.id
+            FROM Item i
+            WHERE i.id = :itemId
+            """)
+    Long findOwnerIdByItemId(@Param("itemId") Long itemId);
 }
