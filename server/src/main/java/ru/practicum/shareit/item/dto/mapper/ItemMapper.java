@@ -18,4 +18,8 @@ public interface ItemMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Item updateItemFromDto(ItemDto itemDto, @MappingTarget Item item);
+
+    default Long map(Long id) {
+        return id;
+    }
 }
