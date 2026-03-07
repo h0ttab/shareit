@@ -34,7 +34,7 @@ public class ItemController {
                             throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
                         })
                 )
-                .body(new ParameterizedTypeReference<List<ItemDto>>() {});
+                .body(new ParameterizedTypeReference<>() {});
     }
 
     @GetMapping("/{itemId}")
@@ -67,7 +67,7 @@ public class ItemController {
                             throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
                         })
                 )
-                .body(new ParameterizedTypeReference<List<ItemDto>>() {});
+                .body(new ParameterizedTypeReference<>() {});
     }
 
     @PostMapping

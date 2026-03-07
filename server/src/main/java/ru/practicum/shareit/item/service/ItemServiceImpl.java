@@ -21,9 +21,9 @@ public class ItemServiceImpl implements ItemService {
     private final Validations validations;
 
     public ItemServiceImpl(
-           @Autowired ItemRepository itemRepository,
-           @Autowired ItemMapper itemMapper,
-           @Autowired UserService userService) {
+            @Autowired ItemRepository itemRepository,
+            @Autowired ItemMapper itemMapper,
+            @Autowired UserService userService) {
         this.itemRepository = itemRepository;
         this.itemMapper = itemMapper;
         validations = new Validations(userService, this);
