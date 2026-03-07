@@ -68,6 +68,14 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable("userId") Long userId) {
-        restClient.delete().uri("/{userId}", userId);
+        restClient.delete().uri("/{userId}", userId)
+                .retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ((req, res) -> {
+                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                        })
+                );
     }
 }
