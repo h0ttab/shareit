@@ -16,6 +16,4 @@ public interface ItemService {
     List<ItemDto> searchAvailableItems(String query);
 
     void delete(Long itemId, Long ownerId);
-
-    void validateItemOwnership(Long itemId, Long userId);
 }

@@ -40,4 +40,9 @@ public class UserServiceImpl implements UserService {
     public void delete(Long userId) {
         repository.deleteById(userId);
     }
+
+    @Override
+    public boolean checkUserExistence(Long userId) {
+        return repository.existsById(userId);
+    }
 }

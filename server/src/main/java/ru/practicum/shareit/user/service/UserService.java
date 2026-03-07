@@ -10,4 +10,6 @@ public interface UserService {
     UserDto update(Long userId, UserDto userDto);
 
     void delete(Long userId);
+
+    boolean checkUserExistence(Long userId);
 }
