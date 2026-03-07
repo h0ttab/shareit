@@ -28,6 +28,6 @@ public class Item {
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id", nullable = false)
+    @JoinColumn(name = "request_id")
     private ItemRequest itemRequest;
 }
