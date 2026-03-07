@@ -1,6 +1,9 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
+    hikari:
+      initializationFailTimeout: 0
+      connectionTimeout: 30000
   jpa:
     hibernate:
       ddl-auto: validate
