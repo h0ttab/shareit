@@ -1,0 +1,20 @@
+package ru.practicum.shareit.item.dto.mapper;
+
+import java.util.List;
+
+import org.mapstruct.*;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
+
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface ItemMapper {
+    ItemDto toItemDto(Item item);
+
+    @Mapping(target = "ownerId", source = "userId")
+    Item fromItemDto(ItemDto itemDto, Long userId);
+
+    List<ItemDto> toItemDtoList(List<Item> itemList);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Item updateItemFromDto(ItemDto itemDto, @MappingTarget Item item);
+}
