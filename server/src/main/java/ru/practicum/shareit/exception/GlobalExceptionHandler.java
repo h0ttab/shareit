@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDuplicateData(Exception e) {
         log.error(e.getMessage());
-        String errorMessage = "Ошибка дублирования данных при сохранении: " + e.getMessage();
+        String errorMessage = "Ошибка при сохранении данных: " + e.getMessage();
         if (e.getMessage().contains("uq_user_email")) {
             errorMessage = "Такой email уже зарегистрирован";
         }

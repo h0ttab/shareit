@@ -13,7 +13,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("""
             SELECT i
             FROM Item i
-            WHERE i.isAvailable = true
+            WHERE i.available = true
             AND (
                 UPPER(i.name) LIKE CONCAT('%', :query, '%')
                 OR UPPER(i.description) LIKE CONCAT('%', :query, '%')

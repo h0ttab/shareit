@@ -20,8 +20,8 @@ public class Item {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "is_available", nullable = false)
-    private Boolean isAvailable;
+    @Column(name = "available", nullable = false)
+    private Boolean available;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
