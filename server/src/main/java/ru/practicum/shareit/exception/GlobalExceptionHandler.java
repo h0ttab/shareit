@@ -26,6 +26,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(404, e.getMessage());
     }
 
+    @ExceptionHandler(OwnerMismatchException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleOwnerMismatchException(OwnerMismatchException e) {
+        return new ErrorResponse(401, e.getMessage());
+    }
+
     public record ErrorResponse(int statusCode, String errorMessage) {
     }
 }
