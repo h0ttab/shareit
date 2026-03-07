@@ -11,7 +11,7 @@ import ru.practicum.shareit.util.ReferenceMapper;
 public interface ItemMapper {
     ItemDto toItemDto(Item item);
 
-    @Mapping(target = "ownerId", source = "userId")
+    @Mapping(target = "owner", source = "userId")
     Item fromItemDto(ItemDto itemDto, Long userId);
 
     List<ItemDto> toItemDtoList(List<Item> itemList);
