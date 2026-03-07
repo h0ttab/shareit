@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
@@ -9,9 +8,15 @@ import lombok.*;
 @NoArgsConstructor
 public class UserDto {
     private Long id;
-    @NotBlank(groups = Create.class, message = "Имя не может быть пустым")
+
+    @NotNull(groups = Create.class, message = "Имя пользователя обязательно для заполнения")
+    @Pattern(groups = {Create.class, Update.class}, regexp = ".*\\S.*",
+            message = "Имя пользователя не может быть пустым")
     private String name;
-    @NotBlank(groups = Create.class, message = "Email не может быть пустым")
+
+    @NotNull(groups = Create.class, message = "Email обязателен для заполнения")
+    @Pattern(groups = {Create.class, Update.class}, regexp = ".*\\S.*",
+            message = "Email не может быть пустым")
     @Email(groups = {Create.class, Update.class}, message = "Указанное значение не соответствует формату email-адреса")
     private String email;
 
