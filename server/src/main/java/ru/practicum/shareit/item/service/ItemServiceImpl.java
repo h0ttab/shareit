@@ -59,6 +59,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchAvailableItems(String query) {
+        if (query.isBlank()) {
+            return List.of();
+        }
         List<Item> itemList = itemRepository.searchAvailable(query);
         return itemMapper.toItemDtoList(itemList);
     }
