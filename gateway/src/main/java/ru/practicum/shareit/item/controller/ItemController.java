@@ -57,12 +57,7 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> searchAvailableItems(@RequestParam("text") String query) {
         return restClient.get()
-                .uri(uriBuilder ->
-                        uriBuilder
-                                .path("/search")
-                                .queryParam("text", query)
-                                .build()
-                )
+                .uri("/search?text={query}", query)
                 .retrieve()
                 .onStatus(
                         HttpStatusCode::isError,

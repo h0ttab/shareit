@@ -21,7 +21,7 @@ public class Validations {
     }
 
     public void validateUserExists(Long userId) {
-        if (!userService.checkUserExistence(userId)) {
+        if (!userService.existsById(userId)) {
             throw new NotFoundException(String.format("Пользователь с id=%d не найден", userId));
         }
     }

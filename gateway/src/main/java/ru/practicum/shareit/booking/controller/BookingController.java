@@ -40,7 +40,7 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public BookingReturnDto approveBooking(@Positive @PathVariable Long bookingId,
                                            @RequestParam(name = "approved") Boolean isApproved,
-                                           @Positive @RequestHeader(value = userIdHeader) Long userId){
+                                           @Positive @RequestHeader(value = userIdHeader) Long userId) {
         return restClient
                 .patch()
                 .uri("/{bookingId}?approved={isApproved}", bookingId, isApproved)

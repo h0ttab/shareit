@@ -46,7 +46,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingReturnDto approveBooking(Long bookingId, Long userId, Boolean isApproved) {
         Booking booking = repository
                 .findById(bookingId)
-                .orElseThrow(()->
+                .orElseThrow(() ->
                         new NotFoundException(
                                 String.format("Бронирование id=%d не найдено", bookingId)
                         )
