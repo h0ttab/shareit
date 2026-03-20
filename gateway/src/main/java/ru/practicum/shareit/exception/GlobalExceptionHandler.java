@@ -1,7 +1,9 @@
 package ru.practicum.shareit.exception;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +29,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(MethodArgumentNotValidException e) {
         log.error(e.getMessage());
-        return new ErrorResponse(400, e.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
+        Stream<String> fieldErrorList = e.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage);
+        Stream<String> globalErrorList = e.getBindingResult().getGlobalErrors().stream()
+                .map(ObjectError::getDefaultMessage);
+
+        return new ErrorResponse(400, Stream.concat(globalErrorList, fieldErrorList)
                 .collect(Collectors.joining(", ")));
     }
 

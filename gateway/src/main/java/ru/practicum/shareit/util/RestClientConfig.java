@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.util;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,5 +19,11 @@ public class RestClientConfig {
     @Qualifier("ItemClient")
     RestClient itemClient(@Value("#{environment.SHAREIT_SERVER_URL}") String baseUrl) {
         return RestClient.builder().baseUrl(baseUrl + "/items").build();
+    }
+
+    @Bean
+    @Qualifier("BookingsClient")
+    RestClient bookingsClient(@Value("#{environment.SHAREIT_SERVER_URL}") String baseUrl) {
+        return RestClient.builder().baseUrl(baseUrl + "/bookings").build();
     }
 }
