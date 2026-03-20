@@ -72,6 +72,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public boolean existsById(Long itemId) {
+        return itemRepository.existsById(itemId);
+    }
+
+    @Override
     public void delete(Long itemId, Long ownerId) {
         validations.validateItemOwnership(itemId, ownerId);
         itemRepository.deleteById(itemId);

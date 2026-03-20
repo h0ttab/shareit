@@ -36,4 +36,23 @@ public class BookingController {
                 )
                 .body(BookingReturnDto.class);
     }
+
+    @PatchMapping("/{bookingId}")
+    public BookingReturnDto approveBooking(@Positive @PathVariable Long bookingId,
+                                           @RequestParam(name = "approved") Boolean isApproved,
+                                           @Positive @RequestHeader(value = userIdHeader) Long userId){
+        return restClient
+                .patch()
+                .uri("/{bookingId}?approved={isApproved}", bookingId, isApproved)
+                .header(userIdHeader, String.valueOf(userId))
+                .retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ((req, res) -> {
+                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                        })
+                )
+                .body(BookingReturnDto.class);
+    }
 }

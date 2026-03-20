@@ -17,5 +17,7 @@ public interface ItemService {
 
     List<ItemDto> searchAvailableItems(String query);
 
+    boolean existsById(Long itemId);
+
     void delete(Long itemId, Long ownerId);
 }

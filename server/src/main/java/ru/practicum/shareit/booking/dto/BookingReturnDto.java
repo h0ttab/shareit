@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingReturnDto {
+    private Long id;
     private LocalDateTime start;
     private LocalDateTime end;
     private BookingStatus status;

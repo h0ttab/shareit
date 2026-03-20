@@ -19,4 +19,11 @@ public class BookingController {
                                           @RequestBody BookingCreateDto dto) {
         return bookingService.createBooking(dto, bookerId);
     }
+
+    @PatchMapping("/{bookingId}")
+    public BookingReturnDto approveBooking(@PathVariable Long bookingId,
+                                           @RequestParam(name = "approved") Boolean isApproved,
+                                           @RequestHeader(value = userIdHeader) Long userId){
+        return bookingService.approveBooking(bookingId, userId, isApproved);
+    }
 }
