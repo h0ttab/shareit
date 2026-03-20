@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.controller;
 
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import ru.practicum.shareit.user.dto.UserDto.Update;
 
 @RestController
 @RequestMapping("/users")
+@Validated
 public class UserController {
     private final RestClient restClient;
 
@@ -23,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUserById(@PathVariable Long userId) {
+    public UserDto getUserById(@Positive @PathVariable Long userId) {
         return restClient.get().uri("/{userId}", userId).retrieve()
                 .onStatus(
                         HttpStatusCode::isError,
@@ -53,7 +55,7 @@ public class UserController {
     @PatchMapping("/{userId}")
     public UserDto updateUser(
             @Validated(Update.class) @RequestBody UserDto userDto,
-            @PathVariable("userId") Long userId
+            @Positive @PathVariable("userId") Long userId
     ) {
         return restClient.patch().uri("/{userId}", userId).body(userDto).retrieve()
                 .onStatus(
@@ -67,7 +69,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable("userId") Long userId) {
+    public void deleteUser(@Positive @PathVariable("userId") Long userId) {
         restClient.delete().uri("/{userId}", userId)
                 .retrieve()
                 .onStatus(

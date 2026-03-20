@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.controller;
 
 import java.util.List;
 
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,10 +13,12 @@ import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.exception.GlobalExceptionHandler.ErrorResponse;
 import ru.practicum.shareit.exception.ServerException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDto.*;
+import ru.practicum.shareit.item.dto.ItemDto.Create;
+import ru.practicum.shareit.item.dto.ItemDto.Update;
 
 @RestController
 @RequestMapping("/items")
+@Validated
 public class ItemController {
     private final RestClient restClient;
     private final String userIdHeader = "X-Sharer-User-Id";
@@ -25,7 +28,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemsByOwner(@RequestHeader(value = userIdHeader) Long ownerId) {
+    public List<ItemDto> getAllItemsByOwner(@Positive @RequestHeader(value = userIdHeader) Long ownerId) {
         return restClient.get().header(userIdHeader, String.valueOf(ownerId)).retrieve()
                 .onStatus(
                         HttpStatusCode::isError,
@@ -34,7 +37,8 @@ public class ItemController {
                             throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
                         })
                 )
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     @GetMapping("/{itemId}")
@@ -67,11 +71,12 @@ public class ItemController {
                             throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
                         })
                 )
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader(value = userIdHeader) Long ownerId,
+    public ItemDto createItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                               @Validated(Create.class) @RequestBody ItemDto itemDto) {
         return restClient.post().header(userIdHeader, String.valueOf(ownerId)).body(itemDto).retrieve()
                 .onStatus(
@@ -85,7 +90,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(value = userIdHeader) Long ownerId,
+    public ItemDto updateItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                               @PathVariable("itemId") Long itemId,
                               @Validated(Update.class) @RequestBody ItemDto itemDto) {
         return restClient.patch().uri("/{itemId}", itemId).header(userIdHeader, String.valueOf(ownerId)).body(itemDto).retrieve()
@@ -100,7 +105,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public void deleteItem(@RequestHeader(value = userIdHeader) Long ownerId,
+    public void deleteItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                            @PathVariable("itemId") Long itemId) {
         restClient.delete().uri("/{itemId}", itemId).header(userIdHeader, String.valueOf(ownerId))
                 .retrieve()

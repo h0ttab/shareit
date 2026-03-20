@@ -1,7 +1,6 @@
 package ru.practicum.shareit.exception;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
