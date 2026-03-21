@@ -42,7 +42,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsById(Long userId) {
-        return repository.existsById(userId);
+    public void validateUserExists(Long userId) {
+        if (!repository.existsById(userId)) {
+            throw new NotFoundException(String.format("Пользователь с id=%d не найден", userId));
+        }
     }
 }
