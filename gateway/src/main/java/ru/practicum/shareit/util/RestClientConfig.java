@@ -11,19 +11,19 @@ public class RestClientConfig {
 
     @Bean
     @Qualifier("UserClient")
-    RestClient userClient(@Value("#{environment.SHAREIT_SERVER_URL}") String baseUrl) {
+    RestClient userClient(@Value("${shareit-server}") String baseUrl) {
         return RestClient.builder().baseUrl(baseUrl + "/users").build();
     }
 
     @Bean
     @Qualifier("ItemClient")
-    RestClient itemClient(@Value("#{environment.SHAREIT_SERVER_URL}") String baseUrl) {
+    RestClient itemClient(@Value("${shareit-server}") String baseUrl) {
         return RestClient.builder().baseUrl(baseUrl + "/items").build();
     }
 
     @Bean
     @Qualifier("BookingsClient")
-    RestClient bookingsClient(@Value("#{environment.SHAREIT_SERVER_URL}") String baseUrl) {
+    RestClient bookingsClient(@Value("${shareit-server}") String baseUrl) {
         return RestClient.builder().baseUrl(baseUrl + "/bookings").build();
     }
 }
