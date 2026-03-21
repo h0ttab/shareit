@@ -40,13 +40,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingReturnDto approveBooking(Long bookingId, Long userId, Boolean isApproved) {
-        Booking booking = repository
-                .findById(bookingId)
-                .orElseThrow(() ->
-                        new NotFoundException(
-                                String.format("Бронирование id=%d не найдено", bookingId)
-                        )
-                );
+        Booking booking = getBookingIfExists(bookingId);
         if (booking.getStatus() == BookingStatus.APPROVED) {
             throw new BookingException(String.format("Бронирование id=%d уже подтверждено", bookingId));
         }
@@ -61,6 +55,30 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(BookingStatus.REJECTED);
         }
         return mapper.toBookingReturnDto(repository.save(booking));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BookingReturnDto getBookingById(Long userId, Long bookingId) {
+        userService.validateUserExists(userId);
+        Booking booking = getBookingIfExists(bookingId);
+        Long itemOwnerId = booking.getItem().getOwner().getId();
+        if (userId.equals(itemOwnerId) || userId.equals(booking.getBooker().getId())) {
+            return mapper.toBookingReturnDto(booking);
+        }
+        throw new OwnerMismatchException("Просмотр этого бронирования недоступен для вашей учётной записи");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Booking getBookingIfExists(Long bookingId) {
+        return repository
+                .findById(bookingId)
+                .orElseThrow(() ->
+                        new NotFoundException(
+                                String.format("Бронирование id=%d не найдено", bookingId)
+                        )
+                );
     }
 
     @Override

@@ -4,11 +4,16 @@ import java.time.LocalDateTime;
 
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
+import ru.practicum.shareit.booking.model.Booking;
 
 public interface BookingService {
     BookingReturnDto createBooking(BookingCreateDto dto, Long bookerId);
 
     BookingReturnDto approveBooking(Long bookingId, Long userId, Boolean isApproved);
+
+    BookingReturnDto getBookingById(Long userId, Long bookingId);
+
+    Booking getBookingIfExists(Long bookingId);
 
     void validateBookingRequest(BookingCreateDto dto, Long bookerId);
 

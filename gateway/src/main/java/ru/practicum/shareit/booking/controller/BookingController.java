@@ -55,4 +55,22 @@ public class BookingController {
                 )
                 .body(BookingReturnDto.class);
     }
+
+    @GetMapping("/{bookingId}")
+    public BookingReturnDto getBookingById(@Positive @PathVariable Long bookingId,
+                                           @Positive @RequestHeader(value = userIdHeader) Long userId) {
+        return restClient
+                .get()
+                .uri("/{bookingId}", bookingId)
+                .header(userIdHeader, String.valueOf(userId))
+                .retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ((req, res) -> {
+                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
+                        })
+                )
+                .body(BookingReturnDto.class);
+    }
 }
