@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 @Service
 @Primary
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final UserMapper mapper;
@@ -24,6 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDto getById(Long userId) {
         User user = repository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         return mapper.toUserDto(user);
@@ -43,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void validateUserExists(Long userId) {
         if (!repository.existsById(userId)) {
             throw new NotFoundException(String.format("Пользователь с id=%d не найден", userId));

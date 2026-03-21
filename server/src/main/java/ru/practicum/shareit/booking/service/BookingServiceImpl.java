@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
 import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
@@ -21,6 +22,7 @@ import ru.practicum.shareit.user.service.UserService;
 @Service
 @Primary
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Transactional
 public class BookingServiceImpl implements BookingService {
     private final BookingMapper mapper;
     private final BookingRepository repository;
@@ -62,6 +64,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isItemAvailableDuringDates(Long itemId, LocalDateTime start, LocalDateTime end) {
         return repository.isItemAvailableDuringDates(itemId, start, end);
     }

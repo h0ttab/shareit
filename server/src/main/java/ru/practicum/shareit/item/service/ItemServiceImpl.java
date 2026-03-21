@@ -2,9 +2,11 @@ package ru.practicum.shareit.item.service;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.OwnerMismatchException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -15,19 +17,12 @@ import ru.practicum.shareit.user.service.UserService;
 
 @Primary
 @Service
+@Transactional
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final UserService userService;
-
-    public ItemServiceImpl(
-            @Autowired ItemRepository itemRepository,
-            @Autowired ItemMapper itemMapper,
-            @Autowired UserService userService) {
-        this.itemRepository = itemRepository;
-        this.itemMapper = itemMapper;
-        this.userService = userService;
-    }
 
     @Override
     public ItemDto create(ItemDto itemDto, Long userId) {
@@ -37,17 +32,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemDto getById(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Вещь не найдена"));
         return itemMapper.toItemDto(item);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long getOwnerIdByItemId(Long itemId) {
         return itemRepository.findOwnerIdByItemId(itemId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> getAllByOwnerId(Long ownerId) {
         userService.validateUserExists(ownerId);
         List<Item> itemList = itemRepository.findByOwnerId(ownerId);
@@ -63,6 +61,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> searchAvailableItems(String query) {
         if (query.isBlank()) {
             return List.of();
@@ -72,6 +71,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsById(Long itemId) {
         return itemRepository.existsById(itemId);
     }
@@ -83,6 +83,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void validateItemOwnership(Long itemId, Long ownerId) {
         userService.validateUserExists(ownerId);
         if (!getOwnerIdByItemId(itemId).equals(ownerId)) {
