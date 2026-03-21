@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(OwnerMismatchException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleOwnerMismatchException(OwnerMismatchException e) {
         return new ErrorResponse(403, e.getMessage());
     }
@@ -44,6 +44,6 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(400, e.getMessage());
     }
 
-    public record ErrorResponse(int statusCode, String errorMessage) {
+    public record ErrorResponse(int statusCode, String error) {
     }
 }

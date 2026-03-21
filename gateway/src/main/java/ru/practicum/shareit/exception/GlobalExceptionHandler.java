@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", ")));
     }
 
-    public record ErrorResponse(int statusCode, String errorMessage) {
+    public record ErrorResponse(int statusCode, String error) {
         public static ErrorResponse readFromClientResponse(ClientHttpResponse res) throws IOException {
             return new ObjectMapper().readValue(res.getBody().readAllBytes(), ErrorResponse.class);
         }
