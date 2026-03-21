@@ -31,7 +31,7 @@ public class UserController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(UserDto.class);
@@ -46,7 +46,7 @@ public class UserController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(UserDto.class);
@@ -62,7 +62,7 @@ public class UserController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(UserDto.class);
@@ -76,7 +76,7 @@ public class UserController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 );
     }

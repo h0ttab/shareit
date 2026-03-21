@@ -34,7 +34,7 @@ public class ItemController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(new ParameterizedTypeReference<>() {
@@ -48,7 +48,7 @@ public class ItemController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(ItemDto.class);
@@ -63,7 +63,7 @@ public class ItemController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(new ParameterizedTypeReference<>() {
@@ -78,7 +78,7 @@ public class ItemController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(ItemDto.class);
@@ -93,7 +93,7 @@ public class ItemController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(ItemDto.class);
@@ -108,7 +108,7 @@ public class ItemController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 );
     }

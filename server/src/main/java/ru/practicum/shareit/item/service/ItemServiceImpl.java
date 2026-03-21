@@ -67,7 +67,7 @@ public class ItemServiceImpl implements ItemService {
         if (query.isBlank()) {
             return List.of();
         }
-        List<Item> itemList = itemRepository.searchAvailable(query);
+        List<Item> itemList = itemRepository.searchAvailable(query.toUpperCase());
         return itemMapper.toItemDtoList(itemList);
     }
 

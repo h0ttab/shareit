@@ -31,7 +31,7 @@ public class BookingController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(BookingReturnDto.class);
@@ -50,7 +50,7 @@ public class BookingController {
                         HttpStatusCode::isError,
                         ((req, res) -> {
                             ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.errorMessage());
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
                 .body(BookingReturnDto.class);
