@@ -26,6 +26,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(404, e.getMessage());
     }
 
+    @ExceptionHandler(ItemUnavailableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleItemUnavailableException(ItemUnavailableException e) {
+        return new ErrorResponse(400, e.getMessage());
+    }
+
     @ExceptionHandler(OwnerMismatchException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleOwnerMismatchException(OwnerMismatchException e) {
