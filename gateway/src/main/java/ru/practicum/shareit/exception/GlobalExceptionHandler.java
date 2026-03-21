@@ -37,6 +37,12 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", ")));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse(400, e.getMessage());
+    }
+
     public record ErrorResponse(int statusCode, String error) {
         public static ErrorResponse readFromClientResponse(ClientHttpResponse res) throws IOException {
             return new ObjectMapper().readValue(res.getBody().readAllBytes(), ErrorResponse.class);

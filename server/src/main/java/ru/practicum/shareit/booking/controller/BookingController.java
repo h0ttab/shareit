@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking.controller;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,5 +33,19 @@ public class BookingController {
     public BookingReturnDto getBookingById(@PathVariable Long bookingId,
                                            @RequestHeader(value = userIdHeader) Long userId) {
         return bookingService.getBookingById(userId, bookingId);
+    }
+
+    @GetMapping
+    public List<BookingReturnDto> getBookingsByBooker(@RequestParam(name = "state", required = false,
+                                                                  defaultValue = "ALL") String state,
+                                                      @RequestHeader(value = userIdHeader) Long userId) {
+        return bookingService.getBookingsByBooker(userId, state);
+    }
+
+    @GetMapping("/owner")
+    public List<BookingReturnDto> getBookingsByOwner(@RequestParam(name = "state", required = false,
+                                                                 defaultValue = "ALL") String state,
+                                                      @RequestHeader(value = userIdHeader) Long userId) {
+        return bookingService.getBookingsByOwner(userId, state);
     }
 }
