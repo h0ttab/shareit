@@ -38,6 +38,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(403, e.getMessage());
     }
 
+    @ExceptionHandler(BookingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingException(BookingException e) {
+        return new ErrorResponse(400, e.getMessage());
+    }
+
     public record ErrorResponse(int statusCode, String errorMessage) {
     }
 }

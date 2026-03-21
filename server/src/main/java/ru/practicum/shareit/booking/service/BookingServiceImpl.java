@@ -45,6 +45,9 @@ public class BookingServiceImpl implements BookingService {
                                 String.format("Бронирование id=%d не найдено", bookingId)
                         )
                 );
+        if (booking.getStatus() == BookingStatus.APPROVED) {
+            throw new BookingException(String.format("Бронирование id=%d уже подтверждено", bookingId));
+        }
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new OwnerMismatchException(
                     String.format("Пользователь id=%d не является владельцем забронированной вещи", userId)
