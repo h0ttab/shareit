@@ -1,5 +1,6 @@
 package ru.practicum.shareit.exception;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,7 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(400, e.getMessage());
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record ErrorResponse(int statusCode, String error) {
     }
 }

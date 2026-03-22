@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -22,6 +24,8 @@ public class ItemDto {
 
     @NotNull(groups = Create.class, message = "Статус доступности вещи обязателен для заполнения")
     private Boolean available;
+
+    private List<CommentDto> comments;
 
     public interface Create {
     }

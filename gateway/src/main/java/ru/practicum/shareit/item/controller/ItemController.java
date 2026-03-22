@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.exception.GlobalExceptionHandler.ErrorResponse;
 import ru.practicum.shareit.exception.ServerException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDto.Create;
 import ru.practicum.shareit.item.dto.ItemDto.Update;
@@ -84,9 +85,26 @@ public class ItemController {
                 .body(ItemDto.class);
     }
 
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@RequestHeader(value = userIdHeader) Long userId,
+                                    @PathVariable Long itemId,
+                                    @Validated @RequestBody CommentDto commentDto) {
+        return restClient.post()
+                .uri("/{itemId}/comment", itemId)
+                .header(userIdHeader, String.valueOf(userId)).body(commentDto).retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ((req, res) -> {
+                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
+                        })
+                )
+                .body(CommentDto.class);
+    }
+
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
-                              @PathVariable("itemId") Long itemId,
+                              @PathVariable Long itemId,
                               @Validated(Update.class) @RequestBody ItemDto itemDto) {
         return restClient.patch().uri("/{itemId}", itemId).header(userIdHeader, String.valueOf(ownerId)).body(itemDto).retrieve()
                 .onStatus(

@@ -1,20 +1,26 @@
 package ru.practicum.shareit.item.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.OwnerMismatchException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.mapper.CommentMapper;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.service.UserService;
 
+@Slf4j
 @Primary
 @Service
 @Transactional
@@ -23,19 +29,22 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final UserService userService;
+    private final CommentService commentService;
+    private final CommentMapper commentMapper;
 
     @Override
     public ItemDto create(ItemDto itemDto, Long userId) {
         userService.validateUserExists(userId);
         Item newItem = itemRepository.save(itemMapper.fromItemDto(itemDto, userId));
-        return itemMapper.toItemDto(newItem);
+        return itemMapper.toItemDto(newItem, List.of());
     }
 
     @Override
     @Transactional(readOnly = true)
     public ItemDto getById(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Вещь не найдена"));
-        return itemMapper.toItemDto(item);
+        List<CommentDto> commentDtoList = commentService.getCommentsByItemId(itemId);
+        return itemMapper.toItemDto(item, commentDtoList);
     }
 
     @Override
@@ -48,8 +57,23 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public List<ItemDto> getAllByOwnerId(Long ownerId) {
         userService.validateUserExists(ownerId);
-        List<Item> itemList = itemRepository.findByOwnerId(ownerId);
-        return itemMapper.toItemDtoList(itemList);
+
+        List<Item> items = itemRepository.findByOwnerId(ownerId);
+        List<Long> itemIds = items.stream().map(Item::getId).toList();
+
+        Map<Long, List<CommentDto>> commentsMap = commentService.findByItemIdIn(itemIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        comment -> comment.getItem().getId(),
+                        Collectors.mapping(commentMapper::toCommentDto, Collectors.toList())
+                ));
+
+        return items.stream()
+                .map(item -> itemMapper.toItemDto(
+                        item,
+                        commentsMap.getOrDefault(item.getId(), List.of())
+                ))
+                .toList();
     }
 
     @Override
@@ -57,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
         validateItemOwnership(itemId, ownerId);
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Вещь не найдена"));
         Item itemUpdated = itemMapper.updateItemFromDto(itemDto, item);
-        return itemMapper.toItemDto(itemUpdated);
+        return itemMapper.toItemDto(itemUpdated, List.of());
     }
 
     @Override
@@ -68,12 +92,6 @@ public class ItemServiceImpl implements ItemService {
         }
         List<Item> itemList = itemRepository.searchAvailable(query.toUpperCase());
         return itemMapper.toItemDtoList(itemList);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existsById(Long itemId) {
-        return itemRepository.existsById(itemId);
     }
 
     @Override

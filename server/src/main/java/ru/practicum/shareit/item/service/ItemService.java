@@ -19,7 +19,5 @@ public interface ItemService {
 
     void validateItemOwnership(Long itemId, Long ownerId);
 
-    boolean existsById(Long itemId);
-
     void delete(Long itemId, Long ownerId);
 }

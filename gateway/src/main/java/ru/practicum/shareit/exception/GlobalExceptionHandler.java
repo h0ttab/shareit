@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class GlobalExceptionHandler {
+    private static ObjectMapper objectMapper;
 
     @ExceptionHandler(ServerException.class)
     public ResponseEntity<ErrorResponse> handleServerException(ServerException e) {
@@ -43,9 +48,10 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(400, e.getMessage());
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record ErrorResponse(int statusCode, String error) {
         public static ErrorResponse readFromClientResponse(ClientHttpResponse res) throws IOException {
-            return new ObjectMapper().readValue(res.getBody().readAllBytes(), ErrorResponse.class);
+            return objectMapper.readValue(res.getBody().readAllBytes(), ErrorResponse.class);
         }
     }
 }

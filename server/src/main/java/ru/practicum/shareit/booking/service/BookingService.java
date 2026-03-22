@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
 import ru.practicum.shareit.booking.model.Booking;

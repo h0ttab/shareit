@@ -28,6 +28,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/shareit
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
+      - TZ=Europe/Moscow
   gateway:
     build:
       context: .
@@ -40,3 +41,4 @@ services:
       - server
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
+      - TZ=Europe/Moscow
