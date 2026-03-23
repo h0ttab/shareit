@@ -10,13 +10,11 @@ import ru.practicum.shareit.util.ReferenceMapper;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = ReferenceMapper.class,
-        imports = LocalDateTime.class)
+        uses = ReferenceMapper.class)
 public interface CommentMapper {
     @Mapping(target = "authorName", source = "author.name")
     CommentDto toCommentDto(Comment comment);
 
-    @Mapping(target = "created", expression = "java(LocalDateTime.now())")
     @Mapping(target = "item", source = "itemId")
     @Mapping(target = "author", source = "authorId")
     Comment fromCommentDto(CommentDto commentDto, Long itemId, Long authorId);

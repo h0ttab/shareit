@@ -52,6 +52,7 @@ public class CommentServiceImpl implements CommentService {
         validateItemExists(itemId);
         validateUserBookedItem(userId, itemId);
         Comment comment = mapper.fromCommentDto(commentDto, itemId, userId);
+        comment.setCreated(LocalDateTime.now());
         Comment savedComment = repository.save(comment);
         return mapper.toCommentDto(savedComment);
     }
