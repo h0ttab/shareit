@@ -83,12 +83,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public boolean isItemAvailableDuringDates(Long itemId, LocalDateTime start, LocalDateTime end) {
-        return repository.isItemAvailableDuringDates(itemId, start, end);
-    }
-
-    @Override
     public void validateBookingRequest(BookingCreateDto dto, Long bookerId) {
         ItemDto item = itemService.getById(dto.getItemId());
         userService.validateUserExists(bookerId);
@@ -101,6 +95,12 @@ public class BookingServiceImpl implements BookingService {
         if (!isItemAvailableDuringDates(item.getId(), dto.getStart(), dto.getEnd())) {
             throw new ItemUnavailableException("Выбранный интервал бронирования недоступен");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isItemAvailableDuringDates(Long itemId, LocalDateTime start, LocalDateTime end) {
+        return repository.isItemAvailableDuringDates(itemId, start, end);
     }
 
     @Override

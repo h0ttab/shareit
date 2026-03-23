@@ -20,8 +20,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             AND b.endDate > :start
             """)
     boolean isItemAvailableDuringDates(@Param("itemId") Long itemId,
-                                          @Param("start") LocalDateTime start,
-                                          @Param("end") LocalDateTime end
+                                       @Param("start") LocalDateTime start,
+                                       @Param("end") LocalDateTime end
     );
 
     List<Booking> findByBookerId(Long bookerId, Sort sort);
@@ -45,4 +45,36 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByItemOwnerIdAndStatus(Long ownerId, BookingStatus status, Sort sort);
 
     boolean existsByBookerIdAndItemIdAndStatusAndEndDateBefore(Long bookerId, Long itemId, BookingStatus bookingStatus, LocalDateTime endTime);
+
+    @Query("""
+            SELECT b FROM Booking b
+            JOIN FETCH b.item i
+            JOIN FETCH b.booker u
+            WHERE i.id IN :itemIds
+              AND b.status = 'APPROVED'
+              AND b.startDate = (
+                  SELECT MAX(b2.startDate)
+                  FROM Booking b2
+                  WHERE b2.item.id = i.id
+                    AND b2.status = 'APPROVED'
+                    AND b2.startDate <= :now
+              )
+            """)
+    List<Booking> findLastBookings(@Param("itemIds") List<Long> itemIds, @Param("now") LocalDateTime now);
+
+    @Query("""
+            SELECT b FROM Booking b
+            JOIN FETCH b.item i
+            JOIN FETCH b.booker u
+            WHERE i.id IN :itemIds
+              AND b.status = 'APPROVED'
+              AND b.startDate = (
+                  SELECT MIN(b2.startDate)
+                  FROM Booking b2
+                  WHERE b2.item.id = i.id
+                    AND b2.status = 'APPROVED'
+                    AND b2.startDate > :now
+              )
+            """)
+    List<Booking> findNextBookings(@Param("itemIds") List<Long> itemIds, @Param("now") LocalDateTime now);
 }

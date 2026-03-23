@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto.mapper;
 import java.util.List;
 
 import org.mapstruct.*;
+import ru.practicum.shareit.booking.dto.BookingDateDto;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -12,6 +13,8 @@ import ru.practicum.shareit.util.ReferenceMapper;
 public interface ItemMapper {
     @Mapping(target = "comments", source = "comments")
     ItemDto toItemDto(Item item, List<CommentDto> comments);
+
+    ItemDto toItemDtoWithBookings(Item item, List<CommentDto> comments, BookingDateDto lastBooking, BookingDateDto nextBooking);
 
     @Mapping(target = "owner", source = "userId")
     Item fromItemDto(ItemDto itemDto, Long userId);

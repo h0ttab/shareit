@@ -3,8 +3,7 @@ package ru.practicum.shareit.booking.dto.mapper;
 import java.util.List;
 
 import org.mapstruct.*;
-import ru.practicum.shareit.booking.dto.BookingCreateDto;
-import ru.practicum.shareit.booking.dto.BookingReturnDto;
+import ru.practicum.shareit.booking.dto.*;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.util.ReferenceMapper;
 
@@ -13,6 +12,10 @@ public interface BookingMapper {
     @Mapping(source = "startDate", target = "start")
     @Mapping(source = "endDate", target = "end")
     BookingReturnDto toBookingReturnDto(Booking booking);
+
+    @Mapping(target = "start", source = "startDate")
+    @Mapping(target = "end", source = "endDate")
+    BookingDateDto toBookingDateDto(Booking booking);
 
     @Mapping(source = "dto.itemId", target = "item")
     @Mapping(source = "bookerId", target = "booker")

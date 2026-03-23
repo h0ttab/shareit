@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.OwnerMismatchException;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -31,6 +35,8 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final CommentService commentService;
     private final CommentMapper commentMapper;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
 
     @Override
     public ItemDto create(ItemDto itemDto, Long userId) {
@@ -59,21 +65,9 @@ public class ItemServiceImpl implements ItemService {
         userService.validateUserExists(ownerId);
 
         List<Item> items = itemRepository.findByOwnerId(ownerId);
-        List<Long> itemIds = items.stream().map(Item::getId).toList();
+        if (items.isEmpty()) return List.of();
 
-        Map<Long, List<CommentDto>> commentsMap = commentService.findByItemIdIn(itemIds)
-                .stream()
-                .collect(Collectors.groupingBy(
-                        comment -> comment.getItem().getId(),
-                        Collectors.mapping(commentMapper::toCommentDto, Collectors.toList())
-                ));
-
-        return items.stream()
-                .map(item -> itemMapper.toItemDto(
-                        item,
-                        commentsMap.getOrDefault(item.getId(), List.of())
-                ))
-                .toList();
+        return addAttributesToItems(items);
     }
 
     @Override
@@ -95,12 +89,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void delete(Long itemId, Long ownerId) {
-        validateItemOwnership(itemId, ownerId);
-        itemRepository.deleteById(itemId);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public void validateItemOwnership(Long itemId, Long ownerId) {
         userService.validateUserExists(ownerId);
@@ -109,5 +97,40 @@ public class ItemServiceImpl implements ItemService {
                     String.format("Пользователь id=%d не является владельцем вещи id=%d", ownerId, itemId)
             );
         }
+    }
+
+    @Override
+    public void delete(Long itemId, Long ownerId) {
+        validateItemOwnership(itemId, ownerId);
+        itemRepository.deleteById(itemId);
+    }
+
+    @Transactional(readOnly = true)
+    private List<ItemDto> addAttributesToItems(List<Item> itemList) {
+        List<Long> itemIds = itemList.stream().map(Item::getId).toList();
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        Map<Long, Booking> lastBookings = bookingRepository.findLastBookings(itemIds, currentTime)
+                .stream()
+                .collect(Collectors.toMap(booking -> booking.getItem().getId(), booking -> booking));
+        Map<Long, Booking> nextBookings = bookingRepository.findNextBookings(itemIds, currentTime)
+                .stream()
+                .collect(Collectors.toMap(booking -> booking.getItem().getId(), booking -> booking));
+
+        Map<Long, List<CommentDto>> commentsMap = commentService.findByItemIdIn(itemIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        comment -> comment.getItem().getId(),
+                        Collectors.mapping(commentMapper::toCommentDto, Collectors.toList())
+                ));
+
+        return itemList.stream()
+                .map(item -> itemMapper.toItemDtoWithBookings(
+                        item,
+                        commentsMap.getOrDefault(item.getId(), List.of()),
+                        bookingMapper.toBookingDateDto(lastBookings.getOrDefault(item.getId(), null)),
+                        bookingMapper.toBookingDateDto(nextBookings.getOrDefault(item.getId(), null))
+                ))
+                .toList();
     }
 }

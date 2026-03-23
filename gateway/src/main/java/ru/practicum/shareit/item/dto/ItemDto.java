@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import ru.practicum.shareit.booking.dto.BookingDateDto;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +25,10 @@ public class ItemDto {
 
     @NotNull(groups = Create.class, message = "Статус доступности вещи обязателен для заполнения")
     private Boolean available;
+
+    private BookingDateDto lastBooking;
+
+    private BookingDateDto nextBooking;
 
     private List<CommentDto> comments;
 

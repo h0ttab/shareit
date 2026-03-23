@@ -101,8 +101,8 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingReturnDto> getBookingsByOwner(@RequestParam(name = "state", required = false,
-                                                              defaultValue = "ALL") String state,
-                                                      @Positive @RequestHeader(value = userIdHeader) Long userId) {
+                                                             defaultValue = "ALL") String state,
+                                                     @Positive @RequestHeader(value = userIdHeader) Long userId) {
         BookingState bookingState = state == null ? BookingState.ALL : BookingState.from(state);
         return restClient
                 .get()
