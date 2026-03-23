@@ -26,4 +26,10 @@ public class RestClientConfig {
     RestClient bookingsClient(@Value("${shareit-server}") String baseUrl) {
         return RestClient.builder().baseUrl(baseUrl + "/bookings").build();
     }
+
+    @Bean
+    @Qualifier("RequestsClient")
+    RestClient requestsClient(@Value("${shareit-server}") String baseUrl) {
+        return RestClient.builder().baseUrl(baseUrl + "/requests").build();
+    }
 }
