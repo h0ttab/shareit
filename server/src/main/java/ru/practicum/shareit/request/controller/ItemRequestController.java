@@ -19,4 +19,9 @@ public class ItemRequestController {
                                               @RequestHeader(value = userIdHeader) Long requestorId) {
         return service.createRequest(dto, requestorId);
     }
+
+    @GetMapping("/{requestId}")
+    public ItemRequestReturnDto getRequestById(@PathVariable Long requestId) {
+        return service.getRequestById(requestId);
+    }
 }

@@ -36,4 +36,21 @@ public class ItemRequestController {
                 )
                 .body(ItemRequestReturnDto.class);
     }
+
+    @GetMapping("/{requestId}")
+    public ItemRequestReturnDto getRequestById(@PathVariable Long requestId,
+                                               @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
+        return restClient.get()
+                .uri("/{requestId}", requestId)
+                .header(userIdHeader, String.valueOf(requestorId))
+                .retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ((req, res) -> {
+                            GlobalExceptionHandler.ErrorResponse errorResponse = GlobalExceptionHandler.ErrorResponse.readFromClientResponse(res);
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
+                        })
+                )
+                .body(ItemRequestReturnDto.class);
+    }
 }

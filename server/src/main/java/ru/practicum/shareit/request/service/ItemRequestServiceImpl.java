@@ -7,8 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
-import ru.practicum.shareit.request.dto.ItemRequestReturnDto;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.dto.*;
 import ru.practicum.shareit.request.dto.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
@@ -21,6 +22,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository repository;
     private final UserService userService;
     private final ItemRequestMapper mapper;
+    private final ItemRepository itemRepository;
 
     @Override
     public ItemRequestReturnDto createRequest(ItemRequestCreateDto dto, Long requestorId) {
@@ -29,5 +31,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         request.setCreated(LocalDateTime.now());
         ItemRequest savedRequest = repository.save(request);
         return mapper.toDto(savedRequest, List.of());
+    }
+
+    @Override
+    public ItemRequestReturnDto getRequestById(Long itemRequestId) {
+        ItemRequest itemRequest = repository.findById(itemRequestId)
+                .orElseThrow(() -> new NotFoundException(String.format("Запрос id=%d не найден", itemRequestId)));
+        List<RequestedItemDto> requestedItemDtoList = itemRepository.findByItemRequestIdIn(List.of(itemRequestId))
+                .stream().map(
+                        item -> new RequestedItemDto(item.getId(), item.getName(), item.getOwner().getId())
+                ).toList();
+        return mapper.toDto(itemRequest, requestedItemDtoList);
     }
 }
