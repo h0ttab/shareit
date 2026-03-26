@@ -7,4 +7,6 @@ public interface ItemRequestService {
     ItemRequestReturnDto createRequest(ItemRequestCreateDto dto, Long requestorId);
 
     ItemRequestReturnDto getRequestById(Long itemRequestId);
+
+    void validateRequestId(Long itemRequestId);
 }

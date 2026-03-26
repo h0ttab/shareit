@@ -2,8 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import java.util.List;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import ru.practicum.shareit.booking.dto.BookingDateDto;
 
@@ -31,6 +30,9 @@ public class ItemDto {
     private BookingDateDto nextBooking;
 
     private List<CommentDto> comments;
+
+    @Positive
+    private Long requestId;
 
     public interface Create {
     }

@@ -22,6 +22,7 @@ import ru.practicum.shareit.item.dto.mapper.CommentMapper;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.service.UserService;
 
 @Slf4j
@@ -37,10 +38,12 @@ public class ItemServiceImpl implements ItemService {
     private final CommentMapper commentMapper;
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
+    private final ItemRequestService itemRequestService;
 
     @Override
     public ItemDto create(ItemDto itemDto, Long userId) {
         userService.validateUserExists(userId);
+        itemRequestService.validateRequestId(itemDto.getRequestId());
         Item newItem = itemRepository.save(itemMapper.fromItemDto(itemDto, userId));
         return itemMapper.toItemDto(newItem, List.of());
     }

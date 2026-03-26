@@ -43,4 +43,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 ).toList();
         return mapper.toDto(itemRequest, requestedItemDtoList);
     }
+
+    @Override
+    public void validateRequestId(Long itemRequestId) {
+        if (itemRequestId == null) {
+            return;
+        }
+        if (!repository.existsById(itemRequestId)) {
+            throw new NotFoundException("Запрос id=%d на создание вещи не найден");
+        }
+    }
 }
