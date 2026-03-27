@@ -1,8 +1,11 @@
 package ru.practicum.shareit.request.controller;
 
+import java.util.List;
+
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +38,23 @@ public class ItemRequestController {
                         })
                 )
                 .body(ItemRequestReturnDto.class);
+    }
+
+    @GetMapping
+    public List<ItemRequestReturnDto> getRequestsByRequestorId(
+            @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
+        return restClient.get()
+                .header(userIdHeader, String.valueOf(requestorId))
+                .retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ((req, res) -> {
+                            GlobalExceptionHandler.ErrorResponse errorResponse = GlobalExceptionHandler.ErrorResponse.readFromClientResponse(res);
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
+                        })
+                )
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     @GetMapping("/{requestId}")

@@ -1,5 +1,7 @@
 package ru.practicum.shareit.request.controller;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,11 @@ public class ItemRequestController {
     public ItemRequestReturnDto createRequest(@RequestBody ItemRequestCreateDto dto,
                                               @RequestHeader(value = userIdHeader) Long requestorId) {
         return service.createRequest(dto, requestorId);
+    }
+
+    @GetMapping
+    public List<ItemRequestReturnDto> getRequestsByRequestorId(@RequestHeader(value = userIdHeader) Long requestorId) {
+        return service.getRequestsByRequestorId(requestorId);
     }
 
     @GetMapping("/{requestId}")

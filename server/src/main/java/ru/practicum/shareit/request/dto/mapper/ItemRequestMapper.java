@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.dto.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mapstruct.*;
@@ -9,7 +10,8 @@ import ru.practicum.shareit.util.ReferenceMapper;
 
 @Mapper(componentModel = "spring",
         uses = ReferenceMapper.class,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        imports = {ArrayList.class})
 public interface ItemRequestMapper {
 
     @Mapping(target = "requestor", source = "userId")

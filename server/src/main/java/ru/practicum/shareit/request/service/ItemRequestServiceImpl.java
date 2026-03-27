@@ -2,12 +2,16 @@ package ru.practicum.shareit.request.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.*;
 import ru.practicum.shareit.request.dto.mapper.ItemRequestMapper;
@@ -15,6 +19,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.service.UserService;
 
+@Slf4j
 @Service
 @Primary
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -42,6 +47,28 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                         item -> new RequestedItemDto(item.getId(), item.getName(), item.getOwner().getId())
                 ).toList();
         return mapper.toDto(itemRequest, requestedItemDtoList);
+    }
+
+    @Override
+    public List<ItemRequestReturnDto> getRequestsByRequestorId(Long requestorId) {
+        userService.validateUserExists(requestorId);
+        List<ItemRequest> requests = repository.findAllByRequestorIdOrderByCreatedDesc(requestorId);
+        List<Long> requestIdList = requests.stream().mapToLong(ItemRequest::getId).boxed().toList();
+        List<Item> itemOnRequestList = itemRepository.findByItemRequestIdIn(requestIdList);
+        Map<Long, List<RequestedItemDto>> requestedItemDtoMap = itemOnRequestList.stream()
+                .collect(Collectors.groupingBy(
+                        itemId -> itemId.getItemRequest().getId(),
+                        Collectors.mapping(
+                                item -> new RequestedItemDto(item.getId(), item.getName(), item.getOwner().getId()),
+                                Collectors.toList()
+                        )
+                )
+        );
+        return requests.stream()
+                .map(itemRequest -> mapper.toDto(itemRequest,
+                        requestedItemDtoMap.getOrDefault(itemRequest.getId(), List.of()))
+                )
+                .toList();
     }
 
     @Override
