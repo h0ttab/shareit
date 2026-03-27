@@ -5,8 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
-import ru.practicum.shareit.request.dto.ItemRequestReturnDto;
+import ru.practicum.shareit.request.dto.*;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 @RestController
@@ -17,18 +16,23 @@ public class ItemRequestController {
     private final ItemRequestService service;
 
     @PostMapping
-    public ItemRequestReturnDto createRequest(@RequestBody ItemRequestCreateDto dto,
-                                              @RequestHeader(value = userIdHeader) Long requestorId) {
+    public ItemRequestFullDto createRequest(@RequestBody ItemRequestCreateDto dto,
+                                            @RequestHeader(value = userIdHeader) Long requestorId) {
         return service.createRequest(dto, requestorId);
     }
 
     @GetMapping
-    public List<ItemRequestReturnDto> getRequestsByRequestorId(@RequestHeader(value = userIdHeader) Long requestorId) {
+    public List<ItemRequestFullDto> getRequestsByRequestorId(@RequestHeader(value = userIdHeader) Long requestorId) {
         return service.getRequestsByRequestorId(requestorId);
     }
 
+    @GetMapping("/all")
+    public List<ItemRequestLightDto> getAllRequests() {
+        return service.getAllRequests();
+    }
+
     @GetMapping("/{requestId}")
-    public ItemRequestReturnDto getRequestById(@PathVariable Long requestId) {
+    public ItemRequestFullDto getRequestById(@PathVariable Long requestId) {
         return service.getRequestById(requestId);
     }
 }

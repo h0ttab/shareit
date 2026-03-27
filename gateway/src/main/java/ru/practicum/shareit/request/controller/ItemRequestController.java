@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.exception.GlobalExceptionHandler;
 import ru.practicum.shareit.exception.ServerException;
-import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
-import ru.practicum.shareit.request.dto.ItemRequestReturnDto;
+import ru.practicum.shareit.request.dto.*;
 
 @Validated
 @RestController
@@ -27,8 +26,8 @@ public class ItemRequestController {
     }
 
     @PostMapping
-    public ItemRequestReturnDto createRequest(@Validated @RequestBody ItemRequestCreateDto dto,
-                                              @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
+    public ItemRequestFullDto createRequest(@Validated @RequestBody ItemRequestCreateDto dto,
+                                            @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
         return restClient.post().header(userIdHeader, String.valueOf(requestorId)).body(dto).retrieve()
                 .onStatus(
                         HttpStatusCode::isError,
@@ -37,11 +36,11 @@ public class ItemRequestController {
                             throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
-                .body(ItemRequestReturnDto.class);
+                .body(ItemRequestFullDto.class);
     }
 
     @GetMapping
-    public List<ItemRequestReturnDto> getRequestsByRequestorId(
+    public List<ItemRequestFullDto> getRequestsByRequestorId(
             @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
         return restClient.get()
                 .header(userIdHeader, String.valueOf(requestorId))
@@ -57,9 +56,25 @@ public class ItemRequestController {
                 });
     }
 
+    @GetMapping("/all")
+    public List<ItemRequestLightDto> getAllRequests() {
+        return restClient.get()
+                .uri("/all")
+                .retrieve()
+                .onStatus(
+                        HttpStatusCode::isError,
+                        ((req, res) -> {
+                            GlobalExceptionHandler.ErrorResponse errorResponse = GlobalExceptionHandler.ErrorResponse.readFromClientResponse(res);
+                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
+                        })
+                )
+                .body(new ParameterizedTypeReference<>() {
+                });
+    }
+
     @GetMapping("/{requestId}")
-    public ItemRequestReturnDto getRequestById(@PathVariable Long requestId,
-                                               @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
+    public ItemRequestFullDto getRequestById(@PathVariable Long requestId,
+                                             @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
         return restClient.get()
                 .uri("/{requestId}", requestId)
                 .header(userIdHeader, String.valueOf(requestorId))
@@ -71,6 +86,6 @@ public class ItemRequestController {
                             throw new ServerException(errorResponse.statusCode(), errorResponse.error());
                         })
                 )
-                .body(ItemRequestReturnDto.class);
+                .body(ItemRequestFullDto.class);
     }
 }

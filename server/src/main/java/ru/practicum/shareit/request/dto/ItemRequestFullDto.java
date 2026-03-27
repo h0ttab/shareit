@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemRequestReturnDto {
+public class ItemRequestFullDto {
     private Long id;
     private String description;
     private LocalDateTime created;

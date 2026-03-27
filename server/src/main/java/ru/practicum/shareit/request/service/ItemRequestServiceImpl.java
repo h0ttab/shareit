@@ -30,7 +30,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
 
     @Override
-    public ItemRequestReturnDto createRequest(ItemRequestCreateDto dto, Long requestorId) {
+    public ItemRequestFullDto createRequest(ItemRequestCreateDto dto, Long requestorId) {
         userService.validateUserExists(requestorId);
         ItemRequest request = mapper.fromDto(dto, requestorId);
         request.setCreated(LocalDateTime.now());
@@ -39,7 +39,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestReturnDto getRequestById(Long itemRequestId) {
+    public ItemRequestFullDto getRequestById(Long itemRequestId) {
         ItemRequest itemRequest = repository.findById(itemRequestId)
                 .orElseThrow(() -> new NotFoundException(String.format("Запрос id=%d не найден", itemRequestId)));
         List<RequestedItemDto> requestedItemDtoList = itemRepository.findByItemRequestIdIn(List.of(itemRequestId))
@@ -50,7 +50,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestReturnDto> getRequestsByRequestorId(Long requestorId) {
+    public List<ItemRequestFullDto> getRequestsByRequestorId(Long requestorId) {
         userService.validateUserExists(requestorId);
         List<ItemRequest> requests = repository.findAllByRequestorIdOrderByCreatedDesc(requestorId);
         List<Long> requestIdList = requests.stream().mapToLong(ItemRequest::getId).boxed().toList();
@@ -69,6 +69,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                         requestedItemDtoMap.getOrDefault(itemRequest.getId(), List.of()))
                 )
                 .toList();
+    }
+
+    @Override
+    public List<ItemRequestLightDto> getAllRequests() {
+        return mapper.toDtoList(repository.findAll());
     }
 
     @Override

@@ -17,7 +17,11 @@ public interface ItemRequestMapper {
     @Mapping(target = "requestor", source = "userId")
     ItemRequest fromDto(ItemRequestCreateDto dto, Long userId);
 
-    ItemRequestReturnDto toDto(ItemRequest itemRequest, List<RequestedItemDto> items);
+    ItemRequestFullDto toDto(ItemRequest itemRequest, List<RequestedItemDto> items);
+
+    ItemRequestLightDto toDto(ItemRequest itemRequest);
+
+    List<ItemRequestLightDto> toDtoList(List<ItemRequest> itemRequests);
 
     default Long map(Long id) {
         return id;
