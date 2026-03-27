@@ -57,13 +57,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<Item> itemOnRequestList = itemRepository.findByItemRequestIdIn(requestIdList);
         Map<Long, List<RequestedItemDto>> requestedItemDtoMap = itemOnRequestList.stream()
                 .collect(Collectors.groupingBy(
-                        itemId -> itemId.getItemRequest().getId(),
-                        Collectors.mapping(
-                                item -> new RequestedItemDto(item.getId(), item.getName(), item.getOwner().getId()),
-                                Collectors.toList()
+                                itemId -> itemId.getItemRequest().getId(),
+                                Collectors.mapping(
+                                        item -> new RequestedItemDto(item.getId(), item.getName(), item.getOwner().getId()),
+                                        Collectors.toList()
+                                )
                         )
-                )
-        );
+                );
         return requests.stream()
                 .map(itemRequest -> mapper.toDto(itemRequest,
                         requestedItemDtoMap.getOrDefault(itemRequest.getId(), List.of()))
