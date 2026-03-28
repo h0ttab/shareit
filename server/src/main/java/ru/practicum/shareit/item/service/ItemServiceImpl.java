@@ -1,8 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -50,8 +49,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public ItemDto getById(Long itemId) {
+    public ItemDto getById(Long itemId, Long userId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Вещь не найдена"));
+        if (Objects.equals(item.getOwner().getId(), userId)) {
+            return addAttributesToItems(List.of(item)).getFirst();
+        }
         List<CommentDto> commentDtoList = commentService.getCommentsByItemId(itemId);
         return itemMapper.toItemDto(item, commentDtoList);
     }

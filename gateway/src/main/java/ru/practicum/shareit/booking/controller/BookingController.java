@@ -6,15 +6,12 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
 import ru.practicum.shareit.booking.model.BookingState;
-import ru.practicum.shareit.exception.GlobalExceptionHandler.ErrorResponse;
-import ru.practicum.shareit.exception.ServerException;
 
 @RestController
 @RequestMapping("/bookings")
@@ -30,14 +27,11 @@ public class BookingController {
     @PostMapping
     public BookingReturnDto createBooking(@Positive @RequestHeader(value = userIdHeader) Long bookerId,
                                           @Validated @RequestBody BookingCreateDto bookingCreateDto) {
-        return restClient.post().header(userIdHeader, String.valueOf(bookerId)).body(bookingCreateDto).retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
+        return restClient
+                .post()
+                .header(userIdHeader, String.valueOf(bookerId))
+                .body(bookingCreateDto)
+                .retrieve()
                 .body(BookingReturnDto.class);
     }
 
@@ -50,13 +44,6 @@ public class BookingController {
                 .uri("/{bookingId}?approved={isApproved}", bookingId, isApproved)
                 .header(userIdHeader, String.valueOf(userId))
                 .retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
                 .body(BookingReturnDto.class);
     }
 
@@ -68,13 +55,6 @@ public class BookingController {
                 .uri("/{bookingId}", bookingId)
                 .header(userIdHeader, String.valueOf(userId))
                 .retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
                 .body(BookingReturnDto.class);
     }
 
@@ -88,15 +68,7 @@ public class BookingController {
                 .uri("?state={state}", bookingState)
                 .header(userIdHeader, String.valueOf(userId))
                 .retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
-                .body(new ParameterizedTypeReference<>() {
-                });
+                .body(new ParameterizedTypeReference<>() {});
     }
 
     @GetMapping("/owner")
@@ -109,14 +81,6 @@ public class BookingController {
                 .uri("/owner?state={state}", bookingState)
                 .header(userIdHeader, String.valueOf(userId))
                 .retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
-                .body(new ParameterizedTypeReference<>() {
-                });
+                .body(new ParameterizedTypeReference<>() {});
     }
 }

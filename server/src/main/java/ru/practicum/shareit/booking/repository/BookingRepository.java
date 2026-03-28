@@ -4,8 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -24,24 +23,34 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                        @Param("end") LocalDateTime end
     );
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByBookerId(Long bookerId, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByBookerIdAndStartDateBeforeAndEndDateAfter(Long bookerId, LocalDateTime now1, LocalDateTime now2, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByBookerIdAndEndDateBefore(Long bookerId, LocalDateTime now, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByBookerIdAndStartDateAfter(Long bookerId, LocalDateTime now, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByBookerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByItemOwnerId(Long ownerId, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByItemOwnerIdAndStartDateBeforeAndEndDateAfter(Long ownerId, LocalDateTime now1, LocalDateTime now2, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByItemOwnerIdAndEndDateBefore(Long ownerId, LocalDateTime now, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByItemOwnerIdAndStartDateAfter(Long ownerId, LocalDateTime now, Sort sort);
 
+    @EntityGraph(attributePaths = {"item", "booker"})
     List<Booking> findByItemOwnerIdAndStatus(Long ownerId, BookingStatus status, Sort sort);
 
     boolean existsByBookerIdAndItemIdAndStatusAndEndDateBefore(Long bookerId, Long itemId, BookingStatus bookingStatus, LocalDateTime endTime);

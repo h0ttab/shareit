@@ -63,14 +63,12 @@ public class CommentServiceImpl implements CommentService {
         return repository.findByItemIdIn(itemIds);
     }
 
-    @Transactional(readOnly = true)
     private void validateItemExists(Long itemId) {
         if (!itemRepository.existsById(itemId)) {
             throw new NotFoundException(String.format("Вещь id=%d не найдена", itemId));
         }
     }
 
-    @Transactional(readOnly = true)
     private void validateUserBookedItem(Long userId, Long itemId) {
         boolean valid = bookingRepository.existsByBookerIdAndItemIdAndStatusAndEndDateBefore(userId, itemId,
                 BookingStatus.APPROVED, LocalDateTime.now());

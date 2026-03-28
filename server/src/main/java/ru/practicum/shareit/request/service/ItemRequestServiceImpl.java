@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -23,6 +24,7 @@ import ru.practicum.shareit.user.service.UserService;
 @Service
 @Primary
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Transactional
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository repository;
     private final UserService userService;
@@ -39,6 +41,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemRequestFullDto getRequestById(Long itemRequestId) {
         ItemRequest itemRequest = repository.findById(itemRequestId)
                 .orElseThrow(() -> new NotFoundException(String.format("Запрос id=%d не найден", itemRequestId)));
@@ -50,6 +53,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemRequestFullDto> getRequestsByRequestorId(Long requestorId) {
         userService.validateUserExists(requestorId);
         List<ItemRequest> requests = repository.findAllByRequestorIdOrderByCreatedDesc(requestorId);
@@ -72,17 +76,19 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestLightDto> getAllRequests() {
-        return mapper.toDtoList(repository.findAll());
+    @Transactional(readOnly = true)
+    public List<ItemRequestLightDto> getAllRequests(Long userId) {
+        return mapper.toDtoList(repository.findAllByRequestorIdNotOrderByCreatedDesc(userId));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void validateRequestId(Long itemRequestId) {
         if (itemRequestId == null) {
             return;
         }
         if (!repository.existsById(itemRequestId)) {
-            throw new NotFoundException("Запрос id=%d на создание вещи не найден");
+            throw new NotFoundException(String.format("Запрос id=%d на создание вещи не найден", itemRequestId));
         }
     }
 }

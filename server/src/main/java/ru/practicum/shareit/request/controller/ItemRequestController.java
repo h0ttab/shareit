@@ -27,8 +27,8 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public List<ItemRequestLightDto> getAllRequests() {
-        return service.getAllRequests();
+    public List<ItemRequestLightDto> getAllRequests(@RequestHeader(userIdHeader) Long userId) {
+        return service.getAllRequests(userId);
     }
 
     @GetMapping("/{requestId}")

@@ -11,7 +11,7 @@ public interface ItemRequestService {
 
     List<ItemRequestFullDto> getRequestsByRequestorId(Long requestorId);
 
-    List<ItemRequestLightDto> getAllRequests();
+    List<ItemRequestLightDto> getAllRequests(Long userId);
 
     void validateRequestId(Long itemRequestId);
 }

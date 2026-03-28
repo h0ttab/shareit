@@ -83,8 +83,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void validateBookingRequest(BookingCreateDto dto, Long bookerId) {
-        ItemDto item = itemService.getById(dto.getItemId());
+        ItemDto item = itemService.getById(dto.getItemId(), bookerId);
         userService.validateUserExists(bookerId);
         if (Objects.equals(itemService.getOwnerIdByItemId(item.getId()), bookerId)) {
             throw new OwnerMismatchException("Владелец не может бронировать собственную вещь.");

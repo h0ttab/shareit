@@ -7,7 +7,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 public interface ItemService {
     ItemDto create(ItemDto itemDto, Long userId);
 
-    ItemDto getById(Long itemId);
+    ItemDto getById(Long itemId, Long userId);
 
     Long getOwnerIdByItemId(Long itemId);
 

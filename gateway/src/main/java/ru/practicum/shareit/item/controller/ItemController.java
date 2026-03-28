@@ -6,12 +6,9 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
-import ru.practicum.shareit.exception.GlobalExceptionHandler.ErrorResponse;
-import ru.practicum.shareit.exception.ServerException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDto.Create;
@@ -30,28 +27,20 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getAllItemsByOwner(@Positive @RequestHeader(value = userIdHeader) Long ownerId) {
-        return restClient.get().header(userIdHeader, String.valueOf(ownerId)).retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
-                .body(new ParameterizedTypeReference<>() {
-                });
+        return restClient
+                .get()
+                .header(userIdHeader, String.valueOf(ownerId))
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable Long itemId) {
-        return restClient.get().uri("/{itemId}", itemId).retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
+    public ItemDto getItemById(@PathVariable Long itemId,
+                               @Positive @RequestHeader(value = userIdHeader) Long userId) {
+        return restClient.get()
+                .uri("/{itemId}", itemId)
+                .header(userIdHeader, String.valueOf(userId))
+                .retrieve()
                 .body(ItemDto.class);
     }
 
@@ -60,28 +49,17 @@ public class ItemController {
         return restClient.get()
                 .uri("/search?text={query}", query)
                 .retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
-                .body(new ParameterizedTypeReference<>() {
-                });
+                .body(new ParameterizedTypeReference<>() {});
     }
 
     @PostMapping
     public ItemDto createItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                               @Validated(Create.class) @RequestBody ItemDto itemDto) {
-        return restClient.post().header(userIdHeader, String.valueOf(ownerId)).body(itemDto).retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
+        return restClient
+                .post()
+                .header(userIdHeader, String.valueOf(ownerId))
+                .body(itemDto)
+                .retrieve()
                 .body(ItemDto.class);
     }
 
@@ -91,14 +69,9 @@ public class ItemController {
                                     @Validated @RequestBody CommentDto commentDto) {
         return restClient.post()
                 .uri("/{itemId}/comment", itemId)
-                .header(userIdHeader, String.valueOf(userId)).body(commentDto).retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
+                .header(userIdHeader, String.valueOf(userId))
+                .body(commentDto)
+                .retrieve()
                 .body(CommentDto.class);
     }
 
@@ -106,28 +79,22 @@ public class ItemController {
     public ItemDto updateItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                               @PathVariable Long itemId,
                               @Validated(Update.class) @RequestBody ItemDto itemDto) {
-        return restClient.patch().uri("/{itemId}", itemId).header(userIdHeader, String.valueOf(ownerId)).body(itemDto).retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                )
+        return restClient
+                .patch()
+                .uri("/{itemId}", itemId)
+                .header(userIdHeader, String.valueOf(ownerId))
+                .body(itemDto)
+                .retrieve()
                 .body(ItemDto.class);
     }
 
     @DeleteMapping("/{itemId}")
     public void deleteItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                            @PathVariable("itemId") Long itemId) {
-        restClient.delete().uri("/{itemId}", itemId).header(userIdHeader, String.valueOf(ownerId))
-                .retrieve()
-                .onStatus(
-                        HttpStatusCode::isError,
-                        ((req, res) -> {
-                            ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
-                            throw new ServerException(errorResponse.statusCode(), errorResponse.error());
-                        })
-                );
+        restClient
+                .delete()
+                .uri("/{itemId}", itemId)
+                .header(userIdHeader, String.valueOf(ownerId))
+                .retrieve();
     }
 }

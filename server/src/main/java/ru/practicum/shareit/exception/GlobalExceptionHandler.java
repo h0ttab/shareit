@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDuplicateData(Exception e) {
+    public ErrorResponse handleDuplicateData(DataIntegrityViolationException e) {
         log.error(e.getMessage());
         String errorMessage = "Ошибка при сохранении данных: " + e.getMessage();
         if (e.getMessage().contains("uq_user_email")) {
