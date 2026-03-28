@@ -3,15 +3,18 @@ package ru.practicum.shareit.request.model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "requests")
 public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     @Column(name = "id")
     private Long id;
 

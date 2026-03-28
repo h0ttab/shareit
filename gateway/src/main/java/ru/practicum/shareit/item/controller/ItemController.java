@@ -14,7 +14,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDto.Create;
 import ru.practicum.shareit.item.dto.ItemDto.Update;
 
-import static ru.practicum.shareit.util.Constants.userIdHeader;
+import static ru.practicum.shareit.util.Constants.USER_ID_HEADER;
 
 @Validated
 @RestController
@@ -24,13 +24,13 @@ public class ItemController {
     private final ItemClient client;
 
     @GetMapping
-    public List<ItemDto> getAllItemsByOwner(@Positive @RequestHeader(value = userIdHeader) Long ownerId) {
+    public List<ItemDto> getAllItemsByOwner(@Positive @RequestHeader(value = USER_ID_HEADER) Long ownerId) {
         return client.getAllItemsByOwner(ownerId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable Long itemId,
-                               @Positive @RequestHeader(value = userIdHeader) Long userId) {
+                               @Positive @RequestHeader(value = USER_ID_HEADER) Long userId) {
         return client.getItemById(itemId, userId);
     }
 
@@ -41,28 +41,28 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto createItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
+    public ItemDto createItem(@Positive @RequestHeader(value = USER_ID_HEADER) Long ownerId,
                               @Validated(Create.class) @RequestBody ItemDto itemDto) {
         return client.createItem(ownerId, itemDto);
     }
 
     @PostMapping("/{itemId}/comment")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentDto createComment(@RequestHeader(value = userIdHeader) Long userId,
+    public CommentDto createComment(@RequestHeader(value = USER_ID_HEADER) Long userId,
                                     @PathVariable Long itemId,
                                     @Validated @RequestBody CommentDto commentDto) {
         return client.createComment(userId, itemId, commentDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
+    public ItemDto updateItem(@Positive @RequestHeader(value = USER_ID_HEADER) Long ownerId,
                               @PathVariable Long itemId,
                               @Validated(Update.class) @RequestBody ItemDto itemDto) {
         return client.updateItem(ownerId, itemId, itemDto);
     }
 
     @DeleteMapping("/{itemId}")
-    public void deleteItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
+    public void deleteItem(@Positive @RequestHeader(value = USER_ID_HEADER) Long ownerId,
                            @PathVariable("itemId") Long itemId) {
         client.deleteItem(ownerId, itemId);
     }

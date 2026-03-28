@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.client.ItemRequestClient;
 import ru.practicum.shareit.request.dto.*;
 
-import static ru.practicum.shareit.util.Constants.userIdHeader;
+import static ru.practicum.shareit.util.Constants.USER_ID_HEADER;
 
 @Validated
 @RestController
@@ -23,24 +23,24 @@ public class ItemRequestController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemRequestFullDto createRequest(@Validated @RequestBody ItemRequestCreateDto dto,
-                                            @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
+                                            @Positive @RequestHeader(value = USER_ID_HEADER) Long requestorId) {
         return client.createRequest(dto, requestorId);
     }
 
     @GetMapping
     public List<ItemRequestFullDto> getRequestsByRequestorId(
-            @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
+            @Positive @RequestHeader(value = USER_ID_HEADER) Long requestorId) {
         return client.getRequestsByRequestorId(requestorId);
     }
 
     @GetMapping("/all")
-    public List<ItemRequestLightDto> getAllRequests(@Positive @RequestHeader(userIdHeader) Long userId) {
+    public List<ItemRequestLightDto> getAllRequests(@Positive @RequestHeader(USER_ID_HEADER) Long userId) {
         return client.getAllRequests(userId);
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestFullDto getRequestById(@PathVariable Long requestId,
-                                             @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
+                                             @Positive @RequestHeader(value = USER_ID_HEADER) Long requestorId) {
         return client.getRequestById(requestId, requestorId);
     }
 }

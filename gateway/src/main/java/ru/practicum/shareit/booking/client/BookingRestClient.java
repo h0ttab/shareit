@@ -12,7 +12,7 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
 import ru.practicum.shareit.booking.model.BookingState;
 
-import static ru.practicum.shareit.util.Constants.userIdHeader;
+import static ru.practicum.shareit.util.Constants.USER_ID_HEADER;
 
 @Component
 @Primary
@@ -27,7 +27,7 @@ public class BookingRestClient implements BookingClient {
     public BookingReturnDto createBooking(Long bookerId, BookingCreateDto bookingCreateDto) {
         return restClient
                 .post()
-                .header(userIdHeader, String.valueOf(bookerId))
+                .header(USER_ID_HEADER, String.valueOf(bookerId))
                 .body(bookingCreateDto)
                 .retrieve()
                 .body(BookingReturnDto.class);
@@ -38,7 +38,7 @@ public class BookingRestClient implements BookingClient {
         return restClient
                 .patch()
                 .uri("/{bookingId}?approved={isApproved}", bookingId, isApproved)
-                .header(userIdHeader, String.valueOf(userId))
+                .header(USER_ID_HEADER, String.valueOf(userId))
                 .retrieve()
                 .body(BookingReturnDto.class);
     }
@@ -48,7 +48,7 @@ public class BookingRestClient implements BookingClient {
         return restClient
                 .get()
                 .uri("/{bookingId}", bookingId)
-                .header(userIdHeader, String.valueOf(userId))
+                .header(USER_ID_HEADER, String.valueOf(userId))
                 .retrieve()
                 .body(BookingReturnDto.class);
     }
@@ -58,7 +58,7 @@ public class BookingRestClient implements BookingClient {
         return restClient
                 .get()
                 .uri("?state={state}", bookingState)
-                .header(userIdHeader, String.valueOf(userId))
+                .header(USER_ID_HEADER, String.valueOf(userId))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
@@ -69,7 +69,7 @@ public class BookingRestClient implements BookingClient {
         return restClient
                 .get()
                 .uri("/owner?state={state}", bookingState)
-                .header(userIdHeader, String.valueOf(userId))
+                .header(USER_ID_HEADER, String.valueOf(userId))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });

@@ -13,7 +13,7 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
 import ru.practicum.shareit.booking.model.BookingState;
 
-import static ru.practicum.shareit.util.Constants.userIdHeader;
+import static ru.practicum.shareit.util.Constants.USER_ID_HEADER;
 
 @Validated
 @RestController
@@ -24,7 +24,7 @@ public class BookingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookingReturnDto createBooking(@Positive @RequestHeader(value = userIdHeader) Long bookerId,
+    public BookingReturnDto createBooking(@Positive @RequestHeader(value = USER_ID_HEADER) Long bookerId,
                                           @Validated @RequestBody BookingCreateDto bookingCreateDto) {
         return client.createBooking(bookerId, bookingCreateDto);
     }
@@ -32,20 +32,20 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public BookingReturnDto approveBooking(@Positive @PathVariable Long bookingId,
                                            @RequestParam(name = "approved") Boolean isApproved,
-                                           @Positive @RequestHeader(value = userIdHeader) Long userId) {
+                                           @Positive @RequestHeader(value = USER_ID_HEADER) Long userId) {
         return client.approveBooking(bookingId, isApproved, userId);
     }
 
     @GetMapping("/{bookingId}")
     public BookingReturnDto getBookingById(@Positive @PathVariable Long bookingId,
-                                           @Positive @RequestHeader(value = userIdHeader) Long userId) {
+                                           @Positive @RequestHeader(value = USER_ID_HEADER) Long userId) {
         return client.getBookingById(bookingId, userId);
     }
 
     @GetMapping
     public List<BookingReturnDto> getBookingsByBooker(@RequestParam(name = "state", required = false,
                                                               defaultValue = "ALL") String state,
-                                                      @Positive @RequestHeader(value = userIdHeader) Long userId) {
+                                                      @Positive @RequestHeader(value = USER_ID_HEADER) Long userId) {
         BookingState bookingState = BookingState.from(state);
         return client.getBookingsByBooker(bookingState, userId);
     }
@@ -53,7 +53,7 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingReturnDto> getBookingsByOwner(@RequestParam(name = "state", required = false,
                                                              defaultValue = "ALL") String state,
-                                                     @Positive @RequestHeader(value = userIdHeader) Long userId) {
+                                                     @Positive @RequestHeader(value = USER_ID_HEADER) Long userId) {
         BookingState bookingState = BookingState.from(state);
         return client.getBookingsByOwner(bookingState, userId);
     }

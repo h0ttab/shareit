@@ -11,7 +11,7 @@ import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import static ru.practicum.shareit.util.Constants.userIdHeader;
+import static ru.practicum.shareit.util.Constants.USER_ID_HEADER;
 
 @Component
 @Primary
@@ -26,7 +26,7 @@ public class ItemRestClient implements ItemClient {
     public List<ItemDto> getAllItemsByOwner(Long ownerId) {
         return restClient
                 .get()
-                .header(userIdHeader, String.valueOf(ownerId))
+                .header(USER_ID_HEADER, String.valueOf(ownerId))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
@@ -36,7 +36,7 @@ public class ItemRestClient implements ItemClient {
     public ItemDto getItemById(Long itemId, Long userId) {
         return restClient.get()
                 .uri("/{itemId}", itemId)
-                .header(userIdHeader, String.valueOf(userId))
+                .header(USER_ID_HEADER, String.valueOf(userId))
                 .retrieve()
                 .body(ItemDto.class);
     }
@@ -54,7 +54,7 @@ public class ItemRestClient implements ItemClient {
     public ItemDto createItem(Long ownerId, ItemDto itemDto) {
         return restClient
                 .post()
-                .header(userIdHeader, String.valueOf(ownerId))
+                .header(USER_ID_HEADER, String.valueOf(ownerId))
                 .body(itemDto)
                 .retrieve()
                 .body(ItemDto.class);
@@ -64,7 +64,7 @@ public class ItemRestClient implements ItemClient {
     public CommentDto createComment(Long userId, Long itemId, CommentDto commentDto) {
         return restClient.post()
                 .uri("/{itemId}/comment", itemId)
-                .header(userIdHeader, String.valueOf(userId))
+                .header(USER_ID_HEADER, String.valueOf(userId))
                 .body(commentDto)
                 .retrieve()
                 .body(CommentDto.class);
@@ -75,7 +75,7 @@ public class ItemRestClient implements ItemClient {
         return restClient
                 .patch()
                 .uri("/{itemId}", itemId)
-                .header(userIdHeader, String.valueOf(ownerId))
+                .header(USER_ID_HEADER, String.valueOf(ownerId))
                 .body(itemDto)
                 .retrieve()
                 .body(ItemDto.class);
@@ -86,7 +86,7 @@ public class ItemRestClient implements ItemClient {
         restClient
                 .delete()
                 .uri("/{itemId}", itemId)
-                .header(userIdHeader, String.valueOf(ownerId))
+                .header(USER_ID_HEADER, String.valueOf(ownerId))
                 .retrieve();
     }
 }

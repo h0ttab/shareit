@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.request.dto.*;
 
-import static ru.practicum.shareit.util.Constants.userIdHeader;
+import static ru.practicum.shareit.util.Constants.USER_ID_HEADER;
 
 @Primary
 @Component
@@ -25,7 +25,7 @@ public class ItemRequestRestClient implements ItemRequestClient {
     public ItemRequestFullDto createRequest(ItemRequestCreateDto dto, Long requestorId) {
         return restClient
                 .post()
-                .header(userIdHeader, String.valueOf(requestorId))
+                .header(USER_ID_HEADER, String.valueOf(requestorId))
                 .body(dto)
                 .retrieve()
                 .body(ItemRequestFullDto.class);
@@ -35,7 +35,7 @@ public class ItemRequestRestClient implements ItemRequestClient {
     public List<ItemRequestFullDto> getRequestsByRequestorId(Long requestorId) {
         return restClient
                 .get()
-                .header(userIdHeader, String.valueOf(requestorId))
+                .header(USER_ID_HEADER, String.valueOf(requestorId))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
@@ -46,7 +46,7 @@ public class ItemRequestRestClient implements ItemRequestClient {
         return restClient
                 .get()
                 .uri("/all")
-                .header(userIdHeader, String.valueOf(userId))
+                .header(USER_ID_HEADER, String.valueOf(userId))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
@@ -57,7 +57,7 @@ public class ItemRequestRestClient implements ItemRequestClient {
         return restClient
                 .get()
                 .uri("/{requestId}", requestId)
-                .header(userIdHeader, String.valueOf(requestorId))
+                .header(USER_ID_HEADER, String.valueOf(requestorId))
                 .retrieve()
                 .body(ItemRequestFullDto.class);
     }

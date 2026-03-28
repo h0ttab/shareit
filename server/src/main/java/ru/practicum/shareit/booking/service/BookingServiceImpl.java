@@ -134,9 +134,7 @@ public class BookingServiceImpl implements BookingService {
                 case WAITING -> repository.findByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
                 case REJECTED -> repository.findByBookerIdAndStatus(userId, BookingStatus.REJECTED, sort);
             };
-        }
-
-        if (userType.equals(UserType.OWNER)) {
+        } else if (userType.equals(UserType.OWNER)) {
             bookings = switch (state) {
                 case ALL -> repository.findByItemOwnerId(userId, sort);
                 case CURRENT -> repository.findByItemOwnerIdAndStartDateBeforeAndEndDateAfter(userId, now, now, sort);
@@ -146,6 +144,7 @@ public class BookingServiceImpl implements BookingService {
                 case REJECTED -> repository.findByItemOwnerIdAndStatus(userId, BookingStatus.REJECTED, sort);
             };
         }
+
         return mapper.toBookingReturnDtoList(bookings);
     }
 
