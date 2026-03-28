@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.item.model.Item;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
+
+    @EntityGraph(attributePaths = {"itemRequest"})
     List<Item> findByOwnerId(Long ownerId);
 
     @Query("""

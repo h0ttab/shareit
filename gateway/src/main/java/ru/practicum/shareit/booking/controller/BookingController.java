@@ -3,84 +3,61 @@ package ru.practicum.shareit.booking.controller;
 import java.util.List;
 
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
+import ru.practicum.shareit.booking.client.BookingClient;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
 import ru.practicum.shareit.booking.model.BookingState;
 
-@RestController
-@RequestMapping("/bookings")
-@Validated
-public class BookingController {
-    private final RestClient restClient;
-    private final String userIdHeader = "X-Sharer-User-Id";
+import static ru.practicum.shareit.util.Constants.userIdHeader;
 
-    public BookingController(@Autowired @Qualifier("BookingsClient") RestClient client) {
-        this.restClient = client;
-    }
+@Validated
+@RestController
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequestMapping("/bookings")
+public class BookingController {
+    private final BookingClient client;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public BookingReturnDto createBooking(@Positive @RequestHeader(value = userIdHeader) Long bookerId,
                                           @Validated @RequestBody BookingCreateDto bookingCreateDto) {
-        return restClient
-                .post()
-                .header(userIdHeader, String.valueOf(bookerId))
-                .body(bookingCreateDto)
-                .retrieve()
-                .body(BookingReturnDto.class);
+        return client.createBooking(bookerId, bookingCreateDto);
     }
 
     @PatchMapping("/{bookingId}")
     public BookingReturnDto approveBooking(@Positive @PathVariable Long bookingId,
                                            @RequestParam(name = "approved") Boolean isApproved,
                                            @Positive @RequestHeader(value = userIdHeader) Long userId) {
-        return restClient
-                .patch()
-                .uri("/{bookingId}?approved={isApproved}", bookingId, isApproved)
-                .header(userIdHeader, String.valueOf(userId))
-                .retrieve()
-                .body(BookingReturnDto.class);
+        return client.approveBooking(bookingId, isApproved, userId);
     }
 
     @GetMapping("/{bookingId}")
     public BookingReturnDto getBookingById(@Positive @PathVariable Long bookingId,
                                            @Positive @RequestHeader(value = userIdHeader) Long userId) {
-        return restClient
-                .get()
-                .uri("/{bookingId}", bookingId)
-                .header(userIdHeader, String.valueOf(userId))
-                .retrieve()
-                .body(BookingReturnDto.class);
+        return client.getBookingById(bookingId, userId);
     }
 
     @GetMapping
     public List<BookingReturnDto> getBookingsByBooker(@RequestParam(name = "state", required = false,
                                                               defaultValue = "ALL") String state,
                                                       @Positive @RequestHeader(value = userIdHeader) Long userId) {
-        BookingState bookingState = state == null ? BookingState.ALL : BookingState.from(state);
-        return restClient
-                .get()
-                .uri("?state={state}", bookingState)
-                .header(userIdHeader, String.valueOf(userId))
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+        BookingState bookingState = BookingState.from(state);
+        return client.getBookingsByBooker(bookingState, userId);
     }
 
     @GetMapping("/owner")
     public List<BookingReturnDto> getBookingsByOwner(@RequestParam(name = "state", required = false,
                                                              defaultValue = "ALL") String state,
                                                      @Positive @RequestHeader(value = userIdHeader) Long userId) {
-        BookingState bookingState = state == null ? BookingState.ALL : BookingState.from(state);
-        return restClient
-                .get()
-                .uri("/owner?state={state}", bookingState)
-                .header(userIdHeader, String.valueOf(userId))
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+        BookingState bookingState = BookingState.from(state);
+        return client.getBookingsByOwner(bookingState, userId);
     }
 }

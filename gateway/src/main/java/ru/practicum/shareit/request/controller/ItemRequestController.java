@@ -3,64 +3,44 @@ package ru.practicum.shareit.request.controller;
 import java.util.List;
 
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
+import ru.practicum.shareit.request.client.ItemRequestClient;
 import ru.practicum.shareit.request.dto.*;
+
+import static ru.practicum.shareit.util.Constants.userIdHeader;
 
 @Validated
 @RestController
 @RequestMapping("/requests")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemRequestController {
-    private final String userIdHeader = "X-Sharer-User-Id";
-    private final RestClient restClient;
-
-    public ItemRequestController(@Autowired @Qualifier("RequestsClient") RestClient restClient) {
-        this.restClient = restClient;
-    }
+    private final ItemRequestClient client;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ItemRequestFullDto createRequest(@Validated @RequestBody ItemRequestCreateDto dto,
                                             @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
-        return restClient
-                .post()
-                .header(userIdHeader, String.valueOf(requestorId))
-                .body(dto)
-                .retrieve()
-                .body(ItemRequestFullDto.class);
+        return client.createRequest(dto, requestorId);
     }
 
     @GetMapping
     public List<ItemRequestFullDto> getRequestsByRequestorId(
             @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
-        return restClient
-                .get()
-                .header(userIdHeader, String.valueOf(requestorId))
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+        return client.getRequestsByRequestorId(requestorId);
     }
 
     @GetMapping("/all")
     public List<ItemRequestLightDto> getAllRequests(@Positive @RequestHeader(userIdHeader) Long userId) {
-        return restClient
-                .get()
-                .uri("/all")
-                .header(userIdHeader, String.valueOf(userId))
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+        return client.getAllRequests(userId);
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestFullDto getRequestById(@PathVariable Long requestId,
                                              @Positive @RequestHeader(value = userIdHeader) Long requestorId) {
-        return restClient
-                .get()
-                .uri("/{requestId}", requestId)
-                .header(userIdHeader, String.valueOf(requestorId))
-                .retrieve()
-                .body(ItemRequestFullDto.class);
+        return client.getRequestById(requestId, requestorId);
     }
 }

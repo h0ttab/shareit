@@ -46,10 +46,21 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(400, e.getMessage());
     }
 
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleThrowable(Throwable e) {
+        log.error("Непредвиденная ошибка сервера: {}", e.getMessage(), e);
+        return new ErrorResponse(500, "Внутренняя ошибка сервера");
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record ErrorResponse(int statusCode, String error) {
         public static ErrorResponse readFromClientResponse(ClientHttpResponse res) throws IOException {
-            return new ObjectMapper().readValue(res.getBody().readAllBytes(), ErrorResponse.class);
+            try {
+                return new ObjectMapper().readValue(res.getBody().readAllBytes(), ErrorResponse.class);
+            } catch (IOException e) {
+                return new ErrorResponse(res.getStatusCode().value(), "Неизвестная ошибка сервера");
+            }
         }
     }
 }

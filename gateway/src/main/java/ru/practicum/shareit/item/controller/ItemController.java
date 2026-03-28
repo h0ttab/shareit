@@ -3,98 +3,67 @@ package ru.practicum.shareit.item.controller;
 import java.util.List;
 
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
+import ru.practicum.shareit.item.client.ItemClient;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDto.Create;
 import ru.practicum.shareit.item.dto.ItemDto.Update;
 
+import static ru.practicum.shareit.util.Constants.userIdHeader;
+
+@Validated
 @RestController
 @RequestMapping("/items")
-@Validated
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemController {
-    private final RestClient restClient;
-    private final String userIdHeader = "X-Sharer-User-Id";
-
-    public ItemController(@Autowired @Qualifier("ItemClient") RestClient restClient) {
-        this.restClient = restClient;
-    }
+    private final ItemClient client;
 
     @GetMapping
     public List<ItemDto> getAllItemsByOwner(@Positive @RequestHeader(value = userIdHeader) Long ownerId) {
-        return restClient
-                .get()
-                .header(userIdHeader, String.valueOf(ownerId))
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+        return client.getAllItemsByOwner(ownerId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable Long itemId,
                                @Positive @RequestHeader(value = userIdHeader) Long userId) {
-        return restClient.get()
-                .uri("/{itemId}", itemId)
-                .header(userIdHeader, String.valueOf(userId))
-                .retrieve()
-                .body(ItemDto.class);
+        return client.getItemById(itemId, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchAvailableItems(@RequestParam("text") String query) {
-        return restClient.get()
-                .uri("/search?text={query}", query)
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+        return client.searchAvailableItems(query);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ItemDto createItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                               @Validated(Create.class) @RequestBody ItemDto itemDto) {
-        return restClient
-                .post()
-                .header(userIdHeader, String.valueOf(ownerId))
-                .body(itemDto)
-                .retrieve()
-                .body(ItemDto.class);
+        return client.createItem(ownerId, itemDto);
     }
 
     @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
     public CommentDto createComment(@RequestHeader(value = userIdHeader) Long userId,
                                     @PathVariable Long itemId,
                                     @Validated @RequestBody CommentDto commentDto) {
-        return restClient.post()
-                .uri("/{itemId}/comment", itemId)
-                .header(userIdHeader, String.valueOf(userId))
-                .body(commentDto)
-                .retrieve()
-                .body(CommentDto.class);
+        return client.createComment(userId, itemId, commentDto);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                               @PathVariable Long itemId,
                               @Validated(Update.class) @RequestBody ItemDto itemDto) {
-        return restClient
-                .patch()
-                .uri("/{itemId}", itemId)
-                .header(userIdHeader, String.valueOf(ownerId))
-                .body(itemDto)
-                .retrieve()
-                .body(ItemDto.class);
+        return client.updateItem(ownerId, itemId, itemDto);
     }
 
     @DeleteMapping("/{itemId}")
     public void deleteItem(@Positive @RequestHeader(value = userIdHeader) Long ownerId,
                            @PathVariable("itemId") Long itemId) {
-        restClient
-                .delete()
-                .uri("/{itemId}", itemId)
-                .header(userIdHeader, String.valueOf(ownerId))
-                .retrieve();
+        client.deleteItem(ownerId, itemId);
     }
 }
