@@ -6,13 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClient.ResponseSpec.ErrorHandler;
 import ru.practicum.shareit.exception.GlobalExceptionHandler.*;
 import ru.practicum.shareit.exception.ServerException;
 
 @Configuration
 public class RestClientConfig {
 
-    private final RestClient.ResponseSpec.ErrorHandler errorHandler = (req, res) -> {
+    private final ErrorHandler errorHandler = (req, res) -> {
         ErrorResponse errorResponse = ErrorResponse.readFromClientResponse(res);
         throw new ServerException(errorResponse.statusCode(), errorResponse.error());
     };
