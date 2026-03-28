@@ -57,6 +57,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestFullDto> getRequestsByRequestorId(Long requestorId) {
         userService.validateUserExists(requestorId);
         List<ItemRequest> requests = repository.findAllByRequestorIdOrderByCreatedDesc(requestorId);
+        if (requests.isEmpty()) {
+            return List.of();
+        }
         List<Long> requestIdList = requests.stream().mapToLong(ItemRequest::getId).boxed().toList();
         List<Item> itemOnRequestList = itemRepository.findByItemRequestIdIn(requestIdList);
         Map<Long, List<RequestedItemDto>> requestedItemDtoMap = itemOnRequestList.stream()

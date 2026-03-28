@@ -125,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
         Sort sort = Sort.by(Sort.Direction.DESC, "startDate");
         List<Booking> bookings = List.of();
 
-        if (userType.equals(UserType.BOOKER)) {
+        if (userType == UserType.BOOKER) {
             bookings = switch (state) {
                 case ALL -> repository.findByBookerId(userId, sort);
                 case CURRENT -> repository.findByBookerIdAndStartDateBeforeAndEndDateAfter(userId, now, now, sort);
@@ -134,7 +134,7 @@ public class BookingServiceImpl implements BookingService {
                 case WAITING -> repository.findByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
                 case REJECTED -> repository.findByBookerIdAndStatus(userId, BookingStatus.REJECTED, sort);
             };
-        } else if (userType.equals(UserType.OWNER)) {
+        } else if (userType == UserType.OWNER) {
             bookings = switch (state) {
                 case ALL -> repository.findByItemOwnerId(userId, sort);
                 case CURRENT -> repository.findByItemOwnerIdAndStartDateBeforeAndEndDateAfter(userId, now, now, sort);
