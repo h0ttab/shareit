@@ -37,7 +37,8 @@ public class ItemRequestRestClient implements ItemRequestClient {
                 .get()
                 .header(userIdHeader, String.valueOf(requestorId))
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     @Override
@@ -47,7 +48,8 @@ public class ItemRequestRestClient implements ItemRequestClient {
                 .uri("/all")
                 .header(userIdHeader, String.valueOf(userId))
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     @Override

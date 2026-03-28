@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClient.ResponseSpec.ErrorHandler;
-import ru.practicum.shareit.exception.GlobalExceptionHandler.*;
+import ru.practicum.shareit.exception.GlobalExceptionHandler.ErrorResponse;
 import ru.practicum.shareit.exception.ServerException;
 
 @Configuration

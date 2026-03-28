@@ -60,7 +60,8 @@ public class BookingRestClient implements BookingClient {
                 .uri("?state={state}", bookingState)
                 .header(userIdHeader, String.valueOf(userId))
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     @Override
@@ -70,6 +71,7 @@ public class BookingRestClient implements BookingClient {
                 .uri("/owner?state={state}", bookingState)
                 .header(userIdHeader, String.valueOf(userId))
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 }

@@ -28,7 +28,8 @@ public class ItemRestClient implements ItemClient {
                 .get()
                 .header(userIdHeader, String.valueOf(ownerId))
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     @Override
@@ -45,7 +46,8 @@ public class ItemRestClient implements ItemClient {
         return restClient.get()
                 .uri("/search?text={query}", query)
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 
     @Override
