@@ -77,6 +77,22 @@ class ItemRequestServiceImplTest {
         List<ItemRequestFullDto> myRequests = requestService.getRequestsByRequestorId(requestorId);
 
         assertEquals(1, myRequests.size());
-        assertTrue(myRequests.getFirst().getItems().isEmpty()); // Проверяем, что список items пустой
+        assertTrue(myRequests.getFirst().getItems().isEmpty());
+    }
+
+    @Test
+    void getRequestById_whenExists_thenReturnFullDtoWithItems() {
+        ItemRequestCreateDto createDto = new ItemRequestCreateDto("Need a hammer");
+        ItemRequestFullDto request = requestService.createRequest(createDto, requestorId);
+
+        ItemDto itemDto = new ItemDto(null, "Hammer", "Heavy", true, null, null, null, request.getId());
+        itemService.create(itemDto, otherUserId);
+
+        ItemRequestFullDto found = requestService.getRequestById(request.getId());
+
+        assertNotNull(found);
+        assertEquals(request.getId(), found.getId());
+        assertEquals(1, found.getItems().size());
+        assertEquals("Hammer", found.getItems().getFirst().getName());
     }
 }

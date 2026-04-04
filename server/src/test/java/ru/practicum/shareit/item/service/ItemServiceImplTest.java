@@ -104,4 +104,31 @@ class ItemServiceImplTest {
         ItemDto foundItem = itemService.getById(itemId, ownerId);
         assertTrue(foundItem.getComments().isEmpty());
     }
+
+    @Test
+    void getCommentsByOwnerId_whenExists_thenReturnList() {
+        BookingCreateDto bookingDto = new BookingCreateDto(itemId, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1));
+        Long bookingId = bookingService.createBooking(bookingDto, bookerId).getId();
+        bookingService.approveBooking(bookingId, ownerId, true);
+
+        commentService.createComment(new CommentDto(null, "Great owner!", null, null), itemId, bookerId);
+
+        List<CommentDto> comments = commentService.getCommentsByOwnerId(ownerId);
+
+        assertFalse(comments.isEmpty());
+        assertEquals("Great owner!", comments.getFirst().getText());
+    }
+
+    @Test
+    void update_whenOwner_thenNameAndAvailableUpdated() {
+        ItemDto updateDto = new ItemDto();
+        updateDto.setName("Super Drill");
+        updateDto.setAvailable(false);
+
+        ItemDto updated = itemService.update(itemId, updateDto, ownerId);
+
+        assertEquals("Super Drill", updated.getName());
+        assertFalse(updated.getAvailable());
+        assertEquals("Desc", updated.getDescription());
+    }
 }
