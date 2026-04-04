@@ -86,17 +86,29 @@ class BookingServiceImplTest {
         Long pastId = bookingService.createBooking(pastDto, bookerId).getId();
         bookingService.approveBooking(pastId, ownerId, true);
 
-        BookingCreateDto currentDto = new BookingCreateDto(itemId, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+        BookingCreateDto currentDto = new BookingCreateDto(itemId, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
         Long currentId = bookingService.createBooking(currentDto, bookerId).getId();
         bookingService.approveBooking(currentId, ownerId, true);
 
-        assertFalse(bookingService.getBookingsByBooker(bookerId, "CURRENT").isEmpty());
-        assertFalse(bookingService.getBookingsByBooker(bookerId, "PAST").isEmpty());
-        assertFalse(bookingService.getBookingsByBooker(bookerId, "WAITING").isEmpty());
+        BookingCreateDto futureDto = new BookingCreateDto(itemId, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2));
+        Long futureId = bookingService.createBooking(futureDto, bookerId).getId();
 
-        assertFalse(bookingService.getBookingsByOwner(ownerId, "CURRENT").isEmpty());
-        assertFalse(bookingService.getBookingsByOwner(ownerId, "PAST").isEmpty());
-        assertFalse(bookingService.getBookingsByOwner(ownerId, "WAITING").isEmpty());
-        assertFalse(bookingService.getBookingsByOwner(ownerId, "REJECTED").isEmpty());
+        BookingCreateDto rejectedDto = new BookingCreateDto(itemId, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4));
+        Long rejectedId = bookingService.createBooking(rejectedDto, bookerId).getId();
+        bookingService.approveBooking(rejectedId, ownerId, false);
+
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "ALL").isEmpty(), "ALL failed");
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "PAST").isEmpty(), "PAST failed");
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "CURRENT").isEmpty(), "CURRENT failed");
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "FUTURE").isEmpty(), "FUTURE failed");
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "WAITING").isEmpty(), "WAITING failed");
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "REJECTED").isEmpty(), "REJECTED failed");
+
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "ALL").isEmpty(), "Owner ALL failed");
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "PAST").isEmpty(), "Owner PAST failed");
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "CURRENT").isEmpty(), "Owner CURRENT failed");
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "FUTURE").isEmpty(), "Owner FUTURE failed");
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "WAITING").isEmpty(), "Owner WAITING failed");
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "REJECTED").isEmpty(), "Owner REJECTED failed");
     }
 }
