@@ -14,6 +14,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -41,7 +42,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse(400, e.getMessage());
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMissingHeader(MissingRequestHeaderException e) {
         log.error(e.getMessage());
         return new ErrorResponse(400, e.getMessage());
     }
