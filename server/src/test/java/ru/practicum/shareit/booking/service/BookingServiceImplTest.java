@@ -18,6 +18,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Transactional
 @SpringBootTest
@@ -77,5 +78,25 @@ class BookingServiceImplTest {
 
         List<BookingReturnDto> rejected = bookingService.getBookingsByBooker(bookerId, "REJECTED");
         assertEquals(1, rejected.size());
+    }
+
+    @Test
+    void getBookings_forAllStates_bothRoles() {
+        BookingCreateDto pastDto = new BookingCreateDto(itemId, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(4));
+        Long pastId = bookingService.createBooking(pastDto, bookerId).getId();
+        bookingService.approveBooking(pastId, ownerId, true);
+
+        BookingCreateDto currentDto = new BookingCreateDto(itemId, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+        Long currentId = bookingService.createBooking(currentDto, bookerId).getId();
+        bookingService.approveBooking(currentId, ownerId, true);
+
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "CURRENT").isEmpty());
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "PAST").isEmpty());
+        assertFalse(bookingService.getBookingsByBooker(bookerId, "WAITING").isEmpty());
+
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "CURRENT").isEmpty());
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "PAST").isEmpty());
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "WAITING").isEmpty());
+        assertFalse(bookingService.getBookingsByOwner(ownerId, "REJECTED").isEmpty());
     }
 }

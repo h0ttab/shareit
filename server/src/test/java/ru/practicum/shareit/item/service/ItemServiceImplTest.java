@@ -79,4 +79,17 @@ class ItemServiceImplTest {
         itemService.delete(itemId, ownerId);
         assertTrue(itemService.searchAvailableItems("desc").isEmpty());
     }
+
+    @Test
+    void getAllByOwnerId_whenItemHasNoBookings_thenReturnsWithNulls() {
+        ItemDto itemDto = new ItemDto(null, "New Item", "No Bookings", true,
+                null, null, null, null);
+        itemService.create(itemDto, ownerId);
+
+        List<ItemDto> result = itemService.getAllByOwnerId(ownerId);
+
+        ItemDto found = result.stream().filter(i -> i.getName().equals("New Item")).findFirst().orElseThrow();
+        assertNull(found.getLastBooking());
+        assertNull(found.getNextBooking());
+    }
 }

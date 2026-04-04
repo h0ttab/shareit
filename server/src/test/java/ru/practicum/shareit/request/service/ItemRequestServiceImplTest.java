@@ -47,12 +47,10 @@ class ItemRequestServiceImplTest {
         assertNotNull(created.getId());
         assertEquals("Need a drill", created.getDescription());
 
-        // Добавляем ответ на запрос от другого пользователя
         ItemDto itemDto = new ItemDto(null, "Drill", "Powerful", true, null,
                 null, null, created.getId());
         itemService.create(itemDto, otherUserId);
 
-        // Проверяем получение своего списка запросов вместе с ответами (items)
         List<ItemRequestFullDto> myRequests = requestService.getRequestsByRequestorId(requestorId);
         assertEquals(1, myRequests.size());
         assertEquals(1, myRequests.getFirst().getItems().size());
@@ -64,11 +62,9 @@ class ItemRequestServiceImplTest {
         ItemRequestCreateDto createDto = new ItemRequestCreateDto("Need a drill");
         requestService.createRequest(createDto, requestorId);
 
-        // otherUserId должен видеть запрос от requestorId
         List<ItemRequestLightDto> allRequests = requestService.getAllRequests(otherUserId);
         assertEquals(1, allRequests.size());
 
-        // requestorId не должен видеть свой же запрос в общем поиске
         List<ItemRequestLightDto> myAllRequests = requestService.getAllRequests(requestorId);
         assertTrue(myAllRequests.isEmpty());
     }

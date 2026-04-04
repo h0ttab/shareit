@@ -53,4 +53,10 @@ class ItemRequestServiceImplUnitTest {
         List<?> result = requestService.getRequestsByRequestorId(1L);
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void validateRequestId_whenIdExists_thenSuccess() {
+        when(repository.existsById(1L)).thenReturn(true);
+        assertDoesNotThrow(() -> requestService.validateRequestId(1L));
+    }
 }
