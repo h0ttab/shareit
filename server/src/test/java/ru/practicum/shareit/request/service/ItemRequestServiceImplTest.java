@@ -68,4 +68,15 @@ class ItemRequestServiceImplTest {
         List<ItemRequestLightDto> myAllRequests = requestService.getAllRequests(requestorId);
         assertTrue(myAllRequests.isEmpty());
     }
+
+    @Test
+    void getRequestsByRequestorId_whenRequestsExistButNoItems_thenReturnWithEmptyItemsList() {
+        ItemRequestCreateDto createDto = new ItemRequestCreateDto("Need something");
+        requestService.createRequest(createDto, requestorId);
+
+        List<ItemRequestFullDto> myRequests = requestService.getRequestsByRequestorId(requestorId);
+
+        assertEquals(1, myRequests.size());
+        assertTrue(myRequests.getFirst().getItems().isEmpty()); // Проверяем, что список items пустой
+    }
 }

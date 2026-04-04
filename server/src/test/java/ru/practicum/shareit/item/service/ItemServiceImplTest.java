@@ -92,4 +92,16 @@ class ItemServiceImplTest {
         assertNull(found.getLastBooking());
         assertNull(found.getNextBooking());
     }
+
+    @Test
+    void getAllByOwnerId_whenOwnerHasNoItems_thenReturnsEmptyList() {
+        List<ItemDto> result = itemService.getAllByOwnerId(bookerId);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getById_whenItemHasNoComments_thenReturnsWithEmptyCommentsList() {
+        ItemDto foundItem = itemService.getById(itemId, ownerId);
+        assertTrue(foundItem.getComments().isEmpty());
+    }
 }

@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.service;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -10,10 +12,12 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BookingException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -26,6 +30,10 @@ class CommentServiceImplUnitTest {
     private ItemRepository itemRepository;
     @Mock
     private BookingRepository bookingRepository;
+
+    @Mock
+    private CommentRepository commentRepository;
+
     @Mock
     private UserService userService;
 
@@ -49,5 +57,11 @@ class CommentServiceImplUnitTest {
         )).thenReturn(false);
 
         assertThrows(BookingException.class, () -> commentService.createComment(null, 99L, 1L));
+    }
+
+    @Test
+    void findByItemIdIn_whenNoItems_thenReturnEmptyList() {
+        when(commentRepository.findByItemIdIn(List.of())).thenReturn(List.of());
+        assertTrue(commentService.findByItemIdIn(List.of()).isEmpty());
     }
 }
