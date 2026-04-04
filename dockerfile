@@ -5,7 +5,7 @@ COPY server/pom.xml server/pom.xml
 COPY gateway/pom.xml gateway/pom.xml
 RUN mvn -B dependency:go-offline
 COPY . .
-RUN mvn -B clean package -DskipTests
+RUN mvn -B clean package
 
 FROM amazoncorretto:21 AS server
 COPY --from=builder /build/server/target/*.jar app.jar
