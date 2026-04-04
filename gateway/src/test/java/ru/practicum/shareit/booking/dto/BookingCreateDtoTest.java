@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +29,7 @@ class BookingCreateDtoTest {
 
     @Test
     void testSerialize() throws Exception {
-        LocalDateTime start = LocalDateTime.now().plusDays(1).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime start = LocalDateTime.now().plusDays(1).withNano(0).withSecond(15);
         LocalDateTime end = start.plusDays(2);
         BookingCreateDto dto = new BookingCreateDto(1L, start, end);
 
