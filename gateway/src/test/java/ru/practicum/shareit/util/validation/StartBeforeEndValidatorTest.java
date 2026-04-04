@@ -1,6 +1,7 @@
 package ru.practicum.shareit.util.validation;
 
 import org.junit.jupiter.api.Test;
+
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

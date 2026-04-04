@@ -1,8 +1,11 @@
 package ru.practicum.shareit.item.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,29 +16,21 @@ import org.springframework.web.client.RestClient;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @SpringBootTest(properties = "shareit-server=http://localhost:9090")
 class ItemRestClientTest {
 
+    private static final String HEADER = "X-Sharer-User-Id";
     private ItemRestClient client;
-
     @Autowired
     @Qualifier("ItemClient")
     private RestClient restClient;
-
     @Autowired
     private ObjectMapper mapper;
-
     private MockRestServiceServer mockServer;
-
-    private static final String HEADER = "X-Sharer-User-Id";
 
     @BeforeEach
     void setUp() {

@@ -1,8 +1,11 @@
 package ru.practicum.shareit.request.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,33 +13,23 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
-import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
-import ru.practicum.shareit.request.dto.ItemRequestFullDto;
-import ru.practicum.shareit.request.dto.ItemRequestLightDto;
-
-import java.util.List;
+import ru.practicum.shareit.request.dto.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @SpringBootTest(properties = "shareit-server=http://localhost:9090")
 class ItemRequestRestClientTest {
 
+    private static final String HEADER = "X-Sharer-User-Id";
     private ItemRequestRestClient client;
-
     @Autowired
     @Qualifier("RequestsClient")
     private RestClient restClient;
-
     @Autowired
     private ObjectMapper mapper;
-
     private MockRestServiceServer mockServer;
-
-    private static final String HEADER = "X-Sharer-User-Id";
 
     @BeforeEach
     void setUp() {

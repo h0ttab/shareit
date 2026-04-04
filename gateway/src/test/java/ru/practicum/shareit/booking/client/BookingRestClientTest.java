@@ -1,8 +1,11 @@
 package ru.practicum.shareit.booking.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +17,6 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingReturnDto;
 import ru.practicum.shareit.booking.model.BookingState;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -23,18 +24,14 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @SpringBootTest(properties = "shareit-server=http://localhost:9090")
 class BookingRestClientTest {
 
+    private static final String HEADER = "X-Sharer-User-Id";
     private BookingRestClient client;
-
     @Autowired
     @Qualifier("BookingsClient")
     private RestClient restClient;
-
     @Autowired
     private ObjectMapper mapper;
-
     private MockRestServiceServer mockServer;
-
-    private static final String HEADER = "X-Sharer-User-Id";
 
     @BeforeEach
     void setUp() {

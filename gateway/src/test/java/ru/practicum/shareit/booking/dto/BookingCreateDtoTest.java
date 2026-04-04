@@ -1,18 +1,17 @@
 package ru.practicum.shareit.booking.dto;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import jakarta.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
