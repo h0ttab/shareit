@@ -25,13 +25,16 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 class BookingRestClientTest {
 
     private static final String HEADER = "X-Sharer-User-Id";
-    private BookingRestClient client;
-    @Autowired
-    @Qualifier("BookingsClient")
-    private RestClient restClient;
-    @Autowired
-    private ObjectMapper mapper;
+    private BookingClient client;
+    private final RestClient restClient;
+    private final ObjectMapper mapper;
     private MockRestServiceServer mockServer;
+
+    public BookingRestClientTest(@Autowired @Qualifier("BookingsClient") RestClient client,
+                                 @Autowired ObjectMapper mapper) {
+        this.restClient = client;
+        this.mapper = mapper;
+    }
 
     @BeforeEach
     void setUp() {
