@@ -36,6 +36,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchAvailableItems(@RequestParam("text") String query) {
+        if (query.isBlank()) return List.of();
         return client.searchAvailableItems(query);
     }
 
