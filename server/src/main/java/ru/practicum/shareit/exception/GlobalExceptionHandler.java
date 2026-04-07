@@ -24,24 +24,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(NotFoundException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(404, e.getMessage());
     }
 
     @ExceptionHandler(ItemUnavailableException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleItemUnavailableException(ItemUnavailableException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(400, e.getMessage());
     }
 
     @ExceptionHandler(OwnerMismatchException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleOwnerMismatchException(OwnerMismatchException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(403, e.getMessage());
     }
 
     @ExceptionHandler(BookingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBookingException(BookingException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(400, e.getMessage());
     }
 

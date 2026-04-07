@@ -114,11 +114,11 @@ class ItemControllerTest {
     }
 
     @Test
-    void getItem_whenUnavailable_thenStatus400() throws Exception {
+    void getItem_whenUnavailable_thenStatus409() throws Exception {
         when(itemService.getById(1L, 1L)).thenThrow(new ItemUnavailableException("Unavailable"));
 
         mockMvc.perform(get("/items/{itemId}", 1L).header(USER_ID_HEADER, 1L))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Unavailable"));
     }
 }
