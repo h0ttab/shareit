@@ -24,7 +24,6 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.service.UserService;
 
-@Slf4j
 @Primary
 @Service
 @Transactional
@@ -110,7 +109,6 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.deleteById(itemId);
     }
 
-    @Transactional(readOnly = true)
     private List<ItemDto> addAttributesToItems(List<Item> itemList) {
         List<Long> itemIds = itemList.stream().map(Item::getId).toList();
         LocalDateTime currentTime = LocalDateTime.now();
