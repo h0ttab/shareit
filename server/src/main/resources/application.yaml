@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    hikari:
+      initializationFailTimeout: 0
+      connectionTimeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      format_sql: true
+  sql:
+    init:
+      mode: always
+  logging:
+    level.org.springframework:
+      orm.jpa: INFO
+      orm.jpa.JpaTransactionManager: DEBUG
+      transaction: INFO
+      transaction.interceptor: TRACE
+server:
+  port: 9090
