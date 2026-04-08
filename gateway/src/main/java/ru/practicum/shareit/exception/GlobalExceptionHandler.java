@@ -55,9 +55,9 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(400, e.getMessage());
     }
 
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowable(Throwable e) {
+    public ErrorResponse handleException(Exception e) {
         log.error("Непредвиденная ошибка сервера: {}", e.getMessage(), e);
         return new ErrorResponse(500, "Внутренняя ошибка сервера");
     }

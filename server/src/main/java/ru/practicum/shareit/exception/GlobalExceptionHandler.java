@@ -49,6 +49,13 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(400, e.getMessage());
     }
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleException(Exception e) {
+        log.error("Непредвиденная ошибка сервера: {}", e.getMessage(), e);
+        return new ErrorResponse(500, "Внутренняя ошибка сервера");
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record ErrorResponse(int statusCode, String error) {
     }
