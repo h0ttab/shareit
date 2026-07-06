@@ -6,8 +6,8 @@ services:
       - "5432"
     environment:
       - POSTGRES_DB=shareit
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U user -d shareit" ]
       interval: 5s
@@ -26,8 +26,8 @@ services:
         condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/shareit
-      - SPRING_DATASOURCE_USERNAME=user
-      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - TZ=Europe/Moscow
   gateway:
     build:
