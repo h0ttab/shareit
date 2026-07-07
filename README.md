@@ -1,55 +1,47 @@
-# ShareIt - Item Sharing Platform API 📦
+# ShareIt
 
-![Java](https://img.shields.io/badge/Java-21-orange.svg)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3-green.svg)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)
-![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)
+ShareIt is a backend service for a peer-to-peer item sharing platform. It allows users to list items they own for rent, book items from other users, and leave reviews after the booking is completed.
 
-**ShareIt** is a REST API service that allows users to share things they own with others. Need a drill for one day? Don't buy it, just rent it from your neighbors! 
+This is a personal educational project built to practice microservice-oriented architecture, ORM (Hibernate), and strict request validation in Spring Boot.
 
-This project is built using a **microservice architecture pattern (API Gateway + Backend Server)** to ensure request validation is isolated from the core business logic.
+## Features
+* **Item Management:** Users can add, update, and search for available items.
+* **Booking System:** Users can request to book an item for specific dates. Owners can approve or reject these requests. The system prevents date overlapping.
+* **Item Requests:** If a user needs an item that is not currently listed, they can create an "Item Request". Other users can fulfill these requests.
+* **Comments:** Only users who have successfully booked and used an item can leave a comment on it.
 
-## 🛠 Tech Stack & Tools
-* **Core:** Java 21, Spring Boot 3.3 (Web, Data JPA, Validation)
+## Architecture & Tech Stack
+The application is split into two loosely coupled services communicating via REST:
+1. **Gateway:** Handles incoming HTTP requests and performs strict DTO validation. 
+2. **Server:** Contains the core business logic, database transactions, and data mapping.
+
+* **Language:** Java 21
+* **Framework:** Spring Boot 3.3 (Web, Data JPA, Validation)
 * **Database:** PostgreSQL (production), H2 (testing)
-* **Communication:** Spring RestClient
-* **Mapping:** MapStruct, Lombok
-* **Infrastructure & CI:** Docker, Docker Compose, GitHub Actions
+* **Tools:** MapStruct, Docker, RestClient
 * **Quality Assurance:** JUnit 5, Mockito, JaCoCo, Checkstyle, SpotBugs
-* **API Documentation:** Swagger / OpenAPI 3
 
-## 🏗 Architecture
-The application is divided into two separate modules communicating via REST:
-1. **Gateway:** Handles incoming HTTP requests, performs strict input validation, and routes valid requests to the server.
-2. **Server:** Contains business logic, database transactions, and data mappings. 
+## How to Run
 
-*Note: For demonstration purposes and to simplify testing scenarios without a frontend, authentication is temporarily simulated via the `X-Sharer-User-Id` HTTP header rather than full JWT/Spring Security implementation.*
-
-## 🚀 How to Run (Docker Compose)
+You can run the entire infrastructure (Database, Server, and Gateway) using Docker Compose.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/h0ttab/shareit.git
+   git clone https://github.com/YOUR_GITHUB_NAME/shareit.git
    cd shareit
    ```
-2. Create an `.env` file in the root directory and set your database credentials:
+2. Create an `.env` file in the root directory:
    ```env
    DB_USER=shareit_user
    DB_PASSWORD=secret_password
    ```
-3. Run the application using Docker Compose:
+3. Start the application:
    ```bash
    docker-compose up --build -d
    ```
-4. The API Gateway will be available at `http://localhost:8080`.
 
-## 📖 API Documentation (Swagger)
-Once the application is running, you can explore and test all endpoints via the Swagger UI:
-👉 **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
+## API Documentation
+The API Gateway exposes a Swagger UI for easy endpoint testing.
+*(Note: Authentication is simulated via the `X-Sharer-User-Id` header for simplicity in this learning project).*
 
-## 📊 Key Features Implemented
-* **CRUD operations** for Users and Items.
-* **Booking System:** Requesting, approving, and rejecting item bookings with strict date-overlap validation.
-* **Search Engine:** Text-based search for available items.
-* **Item Requests:** Users can post requests for items they need, and others can fulfill them.
-* **Performance optimization:** Solved N+1 query problems in database fetching using `IN` clauses, Maps, and JPQL fetch joins.
+👉 **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
