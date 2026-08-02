@@ -1,6 +1,6 @@
 services:
   database:
-    image: postgres:latest
+    image: postgres:18.4
     container_name: shareit-database
     expose:
       - "5432"
@@ -9,15 +9,19 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U user -d shareit" ]
-      interval: 5s
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d shareit" ]
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
+    volumes:
+      - db-data:/var/lib/postgresql
+
   server:
-    build:
-      context: .
-      target: server
-    image: shareit-server:latest
+    #    build:
+    #      context: .
+    #      target: server
+    image: ${SERVER_IMAGE}
     container_name: shareit-server
     expose:
       - "9090"
@@ -29,11 +33,12 @@ services:
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - TZ=Europe/Moscow
+
   gateway:
-    build:
-      context: .
-      target: gateway
-    image: shareit-gateway:latest
+    #    build:
+    #      context: .
+    #      target: gateway
+    image: ${GATEWAY_IMAGE}
     container_name: shareit-gateway
     ports:
       - "8080:8080"
@@ -42,3 +47,6 @@ services:
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
       - TZ=Europe/Moscow
+
+volumes:
+  db-data:
